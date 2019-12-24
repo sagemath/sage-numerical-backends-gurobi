@@ -461,9 +461,9 @@ cdef class CoinBackend(GenericBackend):
             sage: p.set_integer(x); p.set_integer(y)
             sage: p.solve()
             9.0
-            sage: p.get_values(x)
+            sage: p.get_values(x)   # random
             2
-            sage: p.get_values(y)
+            sage: p.get_values(y)   # random
             0
             sage: p.remove_constraints([0])
             sage: p.solve()
