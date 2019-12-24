@@ -42,7 +42,8 @@ cdef class CoinBackend(GenericBackend):
     General backend testsuite::
 
         sage: from sage.numerical.backends.generic_backend import get_solver
-        sage: p = get_solver(solver="Coin")
+        sage: from sage_numerical_backends_coin.coin_backend import CoinBackend
+        sage: p = get_solver(solver=CoinBackend)
         sage: TestSuite(p).run()                                        # known bug on 32 bit (#21550)
         sage: TestSuite(p).run(skip=["_test_pickling", "_test_solve"])
     """
@@ -208,13 +209,13 @@ cdef class CoinBackend(GenericBackend):
 
         Check that arguments are used::
 
-            sage: p.col_bounds(5) # tol 1e-8, optional - cbc
+            sage: p.col_bounds(5) # tol 1e-8
             (-2.0, None)
             sage: p.is_variable_integer(5)
             True
             sage: p.col_name(5)
             'a'
-            sage: p.objective_coefficient(5) # tol 1e-8, optional - cbc
+            sage: p.objective_coefficient(5) # tol 1e-8
             42.0
         """
         #cdef int vtype = int(bool(binary)) + int(bool(continuous)) + int(bool(integer))
@@ -327,13 +328,13 @@ cdef class CoinBackend(GenericBackend):
         EXAMPLES::
 
             sage: from sage.numerical.backends.generic_backend import get_solver
-            sage: p = get_solver(solver = "Coin")       # optional -- cbc
-            sage: p.add_variable()                      # optional -- cbc
+            sage: p = get_solver(solver = "Coin")
+            sage: p.add_variable()
             0
-            sage: p.objective_coefficient(0)            # optional -- cbc
+            sage: p.objective_coefficient(0)
             0.0
-            sage: p.objective_coefficient(0,2)          # optional -- cbc
-            sage: p.objective_coefficient(0)            # optional -- cbc
+            sage: p.objective_coefficient(0,2)
+            sage: p.objective_coefficient(0)
             2.0
         """
         if coeff is not None:
