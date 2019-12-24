@@ -13,4 +13,3 @@ dependencies:
   - python=3
   - sage>=8.9
   - pip
-  - coincbc
