@@ -1,4 +1,5 @@
-
+# distutils: language = c++
+# distutils: libraries = Cbc CbcSolver Cgl Clp CoinUtils OsiCbc OsiClp Osi
 """
 COIN Backend
 
