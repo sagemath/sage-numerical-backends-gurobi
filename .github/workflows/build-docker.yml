@@ -7,9 +7,8 @@ jobs:
     runs-on: ubuntu-latest
     container: sagemath/sagemath-develop
     steps:
+      - uses: actions/checkout@v1
       - name: Test package
-      - run: |
+        run: |
           sage --version
           python3 setup.py test
-
-
