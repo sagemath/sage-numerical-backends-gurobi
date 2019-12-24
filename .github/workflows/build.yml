@@ -7,10 +7,13 @@ jobs:
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v1
-    - name: Install sage from conda
-      run: |
-        conda env create -n sage environment.yml
-        conda activate sage
+    - uses: goanpeca/setup-miniconda@v1
+      with:
+        auto-update-conda: true
+        activate-environment: sage
+        environment-file: environment.yml
+        python-version: 3.7
+        auto-activate-base: false
     - name: Test package
       run: |
         python3 setup.py test
