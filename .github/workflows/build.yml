@@ -15,5 +15,6 @@ jobs:
         python-version: 3.7
         auto-activate-base: false
     - name: Test package
+      shell: bash -l {0}
       run: |
         python3 setup.py test
