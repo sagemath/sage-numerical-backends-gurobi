@@ -1,9 +1,24 @@
-##############################################################################
-#       Copyright (C) 2010 Nathann Cohen <nathann.cohen@gmail.com>
-#  Distributed under the terms of the GNU General Public License (GPL)
-#  The full text of the GPL is available at:
-#                  http://www.gnu.org/licenses/
-##############################################################################
+#*****************************************************************************
+#       Copyright (C) 2010-2015 Nathann Cohen <nathann.cohen@gmail.com>
+#       Copyright (C) 2010 Martin Albrecht <martinralbrecht@googlemail.com>
+#       Copyright (C) 2012 John Perry <john.perry@usm.edu>
+#       Copyright (C) 2012-2019 Jeroen Demeyer <jdemeyer@cage.ugent.be>
+#       Copyright (C) 2013 Julien Puydt <julien.puydt@laposte.net>
+#       Copyright (C) 2014 Nils Bruin <nbruin@sfu.ca>
+#       Copyright (C) 2014-2018 Dima Pasechnik <dimpase@gmail.com>
+#       Copyright (C) 2015 Yuan Zhou <yzh@ucdavis.edu>
+#       Copyright (C) 2015 Zeyi Wang <wzy950618@gmail.com>
+#       Copyright (C) 2016 Matthias Koeppe <mkoeppe@math.ucdavis.edu>
+#       Copyright (C) 2017 Jori Mäntysalo <jori.mantysalo@uta.fi>
+#       Copyright (C) 2018 Erik M. Bray <erik.bray@lri.fr>
+#       Copyright (C) 2019 David Coudert <david.coudert@inria.fr>
+#
+# This program is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 2 of the License, or
+# (at your option) any later version.
+#                  https://www.gnu.org/licenses/
+#*****************************************************************************
 
 from sage.numerical.backends.generic_backend cimport GenericBackend
 
