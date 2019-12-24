@@ -1,7 +1,11 @@
 #! /usr/bin/env python
 ## -*- encoding: utf-8 -*-
+
+from __future__ import print_function
+
 import os
 import sys
+import subprocess
 from setuptools import setup
 from setuptools import Extension
 from setuptools.command.test import test as TestCommand # for tests
@@ -23,16 +27,48 @@ def readfile(filename):
 
 gurobi_include_directories = []
 gurobi_lib_directories = []
+gurobi_libs = []
 gurobi_home = os.getenv("GUROBI_HOME")
+
+if not gurobi_home:
+    # gurobi.sh might be in PATH.  As of Gurobi 9.0 (on macOS), it is
+    # a shell script that sets (but does not export) GUROBI_HOME
+    # and then invokes a Python interpreter.
+    try:
+        gurobi_home = subprocess.check_output(". gurobi.sh -c '' && echo $GUROBI_HOME", shell=True).decode("UTF-8").strip()
+        print("Using GUROBI_HOME obtained from gurobi.sh: {}".format(gurobi_home),
+              file=sys.stderr)
+    except subprocess.CalledProcessError:
+        pass
+
+exts = ['so']
+if sys.platform == 'darwin':
+    exts.insert(0, 'dylib')
+
 if gurobi_home:
     gurobi_include_directories.append(gurobi_home + "/include")
-    gurobi_lib_directories.append(gurobi_home + "./lib")
+    libdir = gurobi_home + "/lib"
+    gurobi_lib_directories.append(libdir)
+    from fnmatch import fnmatch
+    for file in os.listdir(libdir):
+        if any(fnmatch(file, 'libgurobi*.' + ext) for ext in exts):
+            gurobi_libs = [os.path.splitext(file)[0][3:]]
+            break
+
+if not gurobi_libs:
+    print("GUROBI_HOME is not set, or it does not point to a directory with a "
+          "Gurobi installation.  Trying to link against -lgurobi", file=sys.stderr)
+    gurobi_libs = ['gurobi']
+else:
+    print("Using gurobi_include_directories={}, libraries={}, library_dirs={}".format(
+        gurobi_include_directories, gurobi_libs, gurobi_lib_directories), file=sys.stderr)
 
  # Cython modules
 ext_modules = [Extension('sage_numerical_backends_gurobi.gurobi_backend',
                          sources = [os.path.join('sage_numerical_backends_gurobi',
                                      'gurobi_backend.pyx')],
                          include_dirs=sage_include_directories() + gurobi_include_directories,
+                         libraries=gurobi_libs,
                          library_dirs=gurobi_lib_directories)
     ]
 
