@@ -21,11 +21,19 @@ def readfile(filename):
     with open(filename, encoding='utf-8') as f:
         return f.read()
 
+gurobi_include_directories = []
+gurobi_lib_directories = []
+gurobi_home = os.getenv("GUROBI_HOME")
+if gurobi_home:
+    gurobi_include_directories.append(gurobi_home + "/include")
+    gurobi_lib_directories.append(gurobi_home + "./lib")
+
  # Cython modules
 ext_modules = [Extension('sage_numerical_backends_gurobi.gurobi_backend',
                          sources = [os.path.join('sage_numerical_backends_gurobi',
                                      'gurobi_backend.pyx')],
-                         include_dirs=sage_include_directories())
+                         include_dirs=sage_include_directories() + gurobi_include_directories,
+                         library_dirs=gurobi_lib_directories)
     ]
 
 setup(
@@ -33,6 +41,7 @@ setup(
     version=readfile("VERSION").strip(),
     description="Gurobi backend for Sage MixedIntegerLinearProgram",
     long_description = readfile("README.md"), # get the long description from the README
+    long_description_content_type='text/x-markdown', # https://packaging.python.org/guides/making-a-pypi-friendly-readme/
     url="https://github.com/mkoeppe/sage-numerical-backends-gurobi",
     # Author list obtained by running the following command on sage 9.0.beta9:
     # for f in gurobi_backend.p*; do git blame -w -M -C -C --line-porcelain "$f" | grep -I '^author '; done | sort -f | uniq -ic | sort -n
