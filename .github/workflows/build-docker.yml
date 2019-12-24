@@ -11,4 +11,4 @@ jobs:
       - name: Test package
         run: |
           sage --version
-          sage-python setup.py test
+          sage setup.py test
