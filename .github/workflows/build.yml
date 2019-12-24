@@ -7,6 +7,10 @@ jobs:
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v1
-    - name: Install dependencies
+    - name: Install sage from conda
+      run: |
+        conda env create -n sage environment.yml
+        conda activate sage
+    - name: Test package
       run: |
         python3 setup.py test
