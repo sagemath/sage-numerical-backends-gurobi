@@ -12,7 +12,7 @@ from sage.env import sage_include_directories
 # For the tests
 class SageTest(TestCommand):
     def run_tests(self):
-        errno = os.system("sage -t --force-lib sage_numerical_backends_coin")
+        errno = os.system("sage -t --force-lib sage_numerical_backends_gurobi")
         if errno != 0:
             sys.exit(1)
 
@@ -22,22 +22,22 @@ def readfile(filename):
         return f.read()
 
  # Cython modules
-ext_modules = [Extension('sage_numerical_backends_coin.coin_backend',
-                         sources = [os.path.join('sage_numerical_backends_coin',
-                                     'coin_backend.pyx')],
+ext_modules = [Extension('sage_numerical_backends_gurobi.gurobi_backend',
+                         sources = [os.path.join('sage_numerical_backends_gurobi',
+                                     'gurobi_backend.pyx')],
                          include_dirs=sage_include_directories())
     ]
 
 setup(
-    name="sage_numerical_backends_coin",
+    name="sage_numerical_backends_gurobi",
     version=readfile("VERSION").strip(),
-    description="COIN-OR backend for Sage MixedIntegerLinearProgram",
+    description="Gurobi backend for Sage MixedIntegerLinearProgram",
     long_description = readfile("README.md"), # get the long description from the README
-    url="https://github.com/mkoeppe/sage-numerical-backends-coin",
+    url="https://github.com/mkoeppe/sage-numerical-backends-gurobi",
     # Author list obtained by running the following command on sage 9.0.beta9:
-    # for f in coin_backend.p*; do git blame -w -M -C -C --line-porcelain "$f" | grep -I '^author '; done | sort -f | uniq -ic | sort -n
+    # for f in gurobi_backend.p*; do git blame -w -M -C -C --line-porcelain "$f" | grep -I '^author '; done | sort -f | uniq -ic | sort -n
     # cut off at < 10 lines of attribution.
-    author='Nathann Cohen, Yuan Zhou, John Perry, Zeyi Wang, Martin Albrecht, Jori Mäntysalo, Matthias Koeppe, Erik M. Bray, Jeroen Demeyer, Nils Bruin, Julien Puydt, Dima Pasechnik, and others',
+    author='Nathann Cohen, Martin Albrecht, Matthias Koeppe, John Perry, David Coudert, Jori Mäntysalo, Jeroen Demeyer, Erik M. Bray, Emil R. Vaughan, and others',
     author_email='mkoeppe@math.ucdavis.edu',
     license='GPLv2+', # This should be consistent with the LICENCE file
     classifiers=['Development Status :: 5 - Production/Stable',
@@ -55,8 +55,8 @@ setup(
     ext_modules = cythonize(ext_modules, include_path=sys.path),
     cmdclass = {'test': SageTest}, # adding a special setup command for tests
     keywords=['milp', 'linear-programming', 'optimization'],
-    packages=['sage_numerical_backends_coin'],
-    package_dir={'sage_numerical_backends_coin': 'sage_numerical_backends_coin'},
-    package_data={'sage_numerical_backends_coin': ['*.pxd']},
+    packages=['sage_numerical_backends_gurobi'],
+    package_dir={'sage_numerical_backends_gurobi': 'sage_numerical_backends_gurobi'},
+    package_data={'sage_numerical_backends_gurobi': ['*.pxd']},
     install_requires = ['sage>=8', 'sage-package', 'sphinx'],
 )

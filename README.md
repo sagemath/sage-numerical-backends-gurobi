@@ -1,2 +1,2 @@
-# sage-numerical-backends-coin
-COIN-OR backend for Sage
+# sage-numerical-backends-gurobi
+Gurobi backend for Sage
