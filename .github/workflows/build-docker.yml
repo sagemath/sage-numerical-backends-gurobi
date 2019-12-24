@@ -1,0 +1,15 @@
+name: Build and test Python package using a Docker image
+
+on: [push]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    container: sagemath/sagemath-develop
+    steps:
+      - name: Test package
+      - run: |
+          sage --version
+          python3 setup.py test
+
+
