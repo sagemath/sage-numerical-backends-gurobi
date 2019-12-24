@@ -42,9 +42,9 @@ cdef class CoinBackend(GenericBackend):
     General backend testsuite::
 
         sage: from sage.numerical.backends.generic_backend import get_solver
-        sage: p = get_solver(solver="Coin")                             # optional - cbc
+        sage: p = get_solver(solver="Coin")
         sage: TestSuite(p).run()                                        # known bug on 32 bit (#21550)
-        sage: TestSuite(p).run(skip=["_test_pickling", "_test_solve"])  # optional - cbc
+        sage: TestSuite(p).run(skip=["_test_pickling", "_test_solve"])
     """
 
     def __cinit__(self, maximization = True):
@@ -54,7 +54,7 @@ cdef class CoinBackend(GenericBackend):
         EXAMPLES::
 
             sage: from sage.numerical.backends.generic_backend import get_solver
-            sage: p = get_solver(solver = "Coin")                  # optional - cbc
+            sage: p = get_solver(solver = "Coin")
 
         """
 
@@ -108,26 +108,26 @@ cdef class CoinBackend(GenericBackend):
         EXAMPLES::
 
             sage: from sage.numerical.backends.generic_backend import get_solver
-            sage: p = get_solver(solver = "Coin")                  # optional - cbc
-            sage: p.ncols()                                         # optional - cbc
+            sage: p = get_solver(solver = "Coin")
+            sage: p.ncols()
             0
-            sage: p.add_variable()                                  # optional - cbc
+            sage: p.add_variable()
             0
-            sage: p.ncols()                                         # optional - cbc
+            sage: p.ncols()
             1
-            sage: p.add_variable(binary=True)                       # optional - cbc
+            sage: p.add_variable(binary=True)
             1
-            sage: p.add_variable(lower_bound=-2.0, integer=True)    # optional - cbc
+            sage: p.add_variable(lower_bound=-2.0, integer=True)
             2
-            sage: p.add_variable(continuous=True, integer=True)     # optional - cbc
+            sage: p.add_variable(continuous=True, integer=True)
             Traceback (most recent call last):
             ...
             ValueError: ...
-            sage: p.add_variable(name='x',obj=1.0)                  # optional - cbc
+            sage: p.add_variable(name='x',obj=1.0)
             3
-            sage: p.col_name(3)                                     # optional - cbc
+            sage: p.col_name(3)
             'x'
-            sage: p.objective_coefficient(3)                        # optional - cbc
+            sage: p.objective_coefficient(3)
             1.0
         """
 
@@ -194,14 +194,14 @@ cdef class CoinBackend(GenericBackend):
         EXAMPLES::
 
             sage: from sage.numerical.backends.generic_backend import get_solver
-            sage: p = get_solver(solver = "Coin")                         # optional - cbc
-            sage: p.ncols()                                                # optional - cbc
+            sage: p = get_solver(solver = "Coin")
+            sage: p.ncols()
             0
-            sage: p.add_variables(5)                                       # optional - cbc
+            sage: p.add_variables(5)
             4
-            sage: p.ncols()                                                # optional - cbc
+            sage: p.ncols()
             5
-            sage: p.add_variables(2, lower_bound=-2.0, integer=True, obj=42.0, names=['a','b']) # optional - cbc
+            sage: p.add_variables(2, lower_bound=-2.0, integer=True, obj=42.0, names=['a','b'])
             6
 
         TESTS:
@@ -210,9 +210,9 @@ cdef class CoinBackend(GenericBackend):
 
             sage: p.col_bounds(5) # tol 1e-8, optional - cbc
             (-2.0, None)
-            sage: p.is_variable_integer(5)   # optional - cbc
+            sage: p.is_variable_integer(5)
             True
-            sage: p.col_name(5)              # optional - cbc
+            sage: p.col_name(5)
             'a'
             sage: p.objective_coefficient(5) # tol 1e-8, optional - cbc
             42.0
@@ -271,13 +271,13 @@ cdef class CoinBackend(GenericBackend):
         EXAMPLES::
 
             sage: from sage.numerical.backends.generic_backend import get_solver
-            sage: p = get_solver(solver = "Coin")   # optional - cbc
-            sage: p.ncols()                                        # optional - cbc
+            sage: p = get_solver(solver = "Coin")
+            sage: p.ncols()
             0
-            sage: p.add_variable()                                  # optional - cbc
+            sage: p.add_variable()
             0
-            sage: p.set_variable_type(0,1)                          # optional - cbc
-            sage: p.is_variable_integer(0)                          # optional - cbc
+            sage: p.set_variable_type(0,1)
+            sage: p.is_variable_integer(0)
             True
         """
 
@@ -304,11 +304,11 @@ cdef class CoinBackend(GenericBackend):
         EXAMPLES::
 
             sage: from sage.numerical.backends.generic_backend import get_solver
-            sage: p = get_solver(solver = "Coin")  # optional - cbc
-            sage: p.is_maximization()                              # optional - cbc
+            sage: p = get_solver(solver = "Coin")
+            sage: p.is_maximization()
             True
-            sage: p.set_sense(-1)                              # optional - cbc
-            sage: p.is_maximization()                              # optional - cbc
+            sage: p.set_sense(-1)
+            sage: p.is_maximization()
             False
         """
         self.si.setObjSense(-sense)
@@ -355,23 +355,23 @@ cdef class CoinBackend(GenericBackend):
         EXAMPLES::
 
             sage: from sage.numerical.backends.generic_backend import get_solver
-            sage: p = get_solver(solver = "Coin")    # optional - cbc
-            sage: p.add_variables(5)                                 # optional - cbc
+            sage: p = get_solver(solver = "Coin")
+            sage: p.add_variables(5)
             4
-            sage: p.set_objective([1, 1, 2, 1, 3])                   # optional - cbc
-            sage: [p.objective_coefficient(x) for x in range(5)]  # optional - cbc
+            sage: p.set_objective([1, 1, 2, 1, 3])
+            sage: [p.objective_coefficient(x) for x in range(5)]
             [1.0, 1.0, 2.0, 1.0, 3.0]
 
         Constants in the objective function are respected::
 
-            sage: p = MixedIntegerLinearProgram(solver='Coin')  # optional - cbc
-            sage: v = p.new_variable(nonnegative=True)          # optional - cbc
-            sage: x,y = v[0], v[1]                              # optional - cbc
-            sage: p.add_constraint(2*x + 3*y, max = 6)          # optional - cbc
-            sage: p.add_constraint(3*x + 2*y, max = 6)          # optional - cbc
-            sage: p.set_objective(x + y + 7)                    # optional - cbc
-            sage: p.set_integer(x); p.set_integer(y)            # optional - cbc
-            sage: p.solve()                                     # optional - cbc
+            sage: p = MixedIntegerLinearProgram(solver='Coin')
+            sage: v = p.new_variable(nonnegative=True)
+            sage: x,y = v[0], v[1]
+            sage: p.add_constraint(2*x + 3*y, max = 6)
+            sage: p.add_constraint(3*x + 2*y, max = 6)
+            sage: p.set_objective(x + y + 7)
+            sage: p.set_integer(x); p.set_integer(y)
+            sage: p.solve()
             9.0
         """
 
@@ -393,8 +393,8 @@ cdef class CoinBackend(GenericBackend):
         EXAMPLES::
 
             sage: from sage.numerical.backends.generic_backend import get_solver
-            sage: p = get_solver(solver = "Coin")   # optional - cbc
-            sage: p.set_verbosity(2)                                # optional - cbc
+            sage: p = get_solver(solver = "Coin")
+            sage: p.set_verbosity(2)
 
         """
         self.model.setLogLevel(level)
@@ -409,26 +409,26 @@ cdef class CoinBackend(GenericBackend):
 
         EXAMPLES::
 
-            sage: p = MixedIntegerLinearProgram(solver='Coin') # optional - cbc
-            sage: v = p.new_variable(nonnegative=True)         # optional - cbc
-            sage: x,y = v[0], v[1]                             # optional - cbc
-            sage: p.add_constraint(2*x + 3*y, max = 6)         # optional - cbc
-            sage: p.add_constraint(3*x + 2*y, max = 6)         # optional - cbc
-            sage: p.set_objective(x + y + 7)                   # optional - cbc
-            sage: p.set_integer(x); p.set_integer(y)           # optional - cbc
-            sage: p.solve()                                    # optional - cbc
+            sage: p = MixedIntegerLinearProgram(solver='Coin')
+            sage: v = p.new_variable(nonnegative=True)
+            sage: x,y = v[0], v[1]
+            sage: p.add_constraint(2*x + 3*y, max = 6)
+            sage: p.add_constraint(3*x + 2*y, max = 6)
+            sage: p.set_objective(x + y + 7)
+            sage: p.set_integer(x); p.set_integer(y)
+            sage: p.solve()
             9.0
-            sage: p.remove_constraint(0)                       # optional - cbc
-            sage: p.solve()                                    # optional - cbc
+            sage: p.remove_constraint(0)
+            sage: p.solve()
             10.0
-            sage: p.get_values([x,y])                          # optional - cbc
+            sage: p.get_values([x,y])
             [0, 3]
 
         TESTS:
 
         Removing fancy constraints does not make Sage crash::
 
-            sage: MixedIntegerLinearProgram(solver='Coin').remove_constraint(-2)  # optional - cbc
+            sage: MixedIntegerLinearProgram(solver='Coin').remove_constraint(-2)
             Traceback (most recent call last):
             ...
             ValueError: The constraint's index i must satisfy 0 <= i < number_of_constraints
@@ -450,30 +450,30 @@ cdef class CoinBackend(GenericBackend):
 
         EXAMPLES::
 
-            sage: p = MixedIntegerLinearProgram(solver='Coin') # optional - cbc
-            sage: v = p.new_variable(nonnegative=True)         # optional - cbc
-            sage: x,y = v[0], v[1]                             # optional - cbc
-            sage: p.add_constraint(2*x + 3*y, max = 6)         # optional - cbc
-            sage: p.add_constraint(3*x + 2*y, max = 6)         # optional - cbc
-            sage: p.set_objective(x + y + 7)                   # optional - cbc
-            sage: p.set_integer(x); p.set_integer(y)           # optional - cbc
-            sage: p.solve()                                    # optional - cbc
+            sage: p = MixedIntegerLinearProgram(solver='Coin')
+            sage: v = p.new_variable(nonnegative=True)
+            sage: x,y = v[0], v[1]
+            sage: p.add_constraint(2*x + 3*y, max = 6)
+            sage: p.add_constraint(3*x + 2*y, max = 6)
+            sage: p.set_objective(x + y + 7)
+            sage: p.set_integer(x); p.set_integer(y)
+            sage: p.solve()
             9.0
-            sage: p.get_values(x)                              # optional - cbc
+            sage: p.get_values(x)
             2
-            sage: p.get_values(y)                              # optional - cbc
+            sage: p.get_values(y)
             0
-            sage: p.remove_constraints([0])                    # optional - cbc
-            sage: p.solve()                                    # optional - cbc
+            sage: p.remove_constraints([0])
+            sage: p.solve()
             10.0
-            sage: p.get_values([x,y])                          # optional - cbc
+            sage: p.get_values([x,y])
             [0, 3]
 
         TESTS:
 
         Removing fancy constraints do not make Sage crash::
 
-            sage: MixedIntegerLinearProgram(solver='Coin').remove_constraints([0, -2])  # optional - cbc
+            sage: MixedIntegerLinearProgram(solver='Coin').remove_constraints([0, -2])
             Traceback (most recent call last):
             ...
             ValueError: The constraint's index i must satisfy 0 <= i < number_of_constraints
@@ -514,16 +514,16 @@ cdef class CoinBackend(GenericBackend):
         EXAMPLES::
 
             sage: from sage.numerical.backends.generic_backend import get_solver
-            sage: p = get_solver(solver = "Coin")                              # optional - cbc
-            sage: p.add_variables(5)                                           # optional - cbc
+            sage: p = get_solver(solver = "Coin")
+            sage: p.add_variables(5)
             4
-            sage: p.add_linear_constraint( zip(range(5), range(5)), 2.0, 2.0)  # optional - cbc
-            sage: p.row(0)                                                     # optional - cbc
+            sage: p.add_linear_constraint( zip(range(5), range(5)), 2.0, 2.0)
+            sage: p.row(0)
             ([0, 1, 2, 3, 4], [0.0, 1.0, 2.0, 3.0, 4.0])
-            sage: p.row_bounds(0)                                              # optional - cbc
+            sage: p.row_bounds(0)
             (2.0, 2.0)
-            sage: p.add_linear_constraint( zip(range(5), range(5)), 1.0, 1.0, name='foo') # optional - cbc
-            sage: p.row_name(1)                                                           # optional - cbc
+            sage: p.add_linear_constraint( zip(range(5), range(5)), 1.0, 1.0, name='foo')
+            sage: p.row_name(1)
             'foo'
         """
         if lower_bound is None and upper_bound is None:
@@ -565,13 +565,13 @@ cdef class CoinBackend(GenericBackend):
         EXAMPLES::
 
             sage: from sage.numerical.backends.generic_backend import get_solver
-            sage: p = get_solver(solver = "Coin")  # optional - cbc
-            sage: p.add_variables(5)                               # optional - cbc
+            sage: p = get_solver(solver = "Coin")
+            sage: p.add_variables(5)
             4
-            sage: p.add_linear_constraint(zip(range(5), range(5)), 2, 2)       # optional - cbc
-            sage: p.row(0)                                     # optional - cbc
+            sage: p.add_linear_constraint(zip(range(5), range(5)), 2, 2)
+            sage: p.row(0)
             ([0, 1, 2, 3, 4], [0.0, 1.0, 2.0, 3.0, 4.0])
-            sage: p.row_bounds(0)                              # optional - cbc
+            sage: p.row_bounds(0)
             (2.0, 2.0)
         """
 
@@ -610,13 +610,13 @@ cdef class CoinBackend(GenericBackend):
         EXAMPLES::
 
             sage: from sage.numerical.backends.generic_backend import get_solver
-            sage: p = get_solver(solver = "Coin")  # optional - cbc
-            sage: p.add_variables(5)                               # optional - cbc
+            sage: p = get_solver(solver = "Coin")
+            sage: p.add_variables(5)
             4
-            sage: p.add_linear_constraint(zip(range(5), range(5)), 2, 2)       # optional - cbc
-            sage: p.row(0)                                     # optional - cbc
+            sage: p.add_linear_constraint(zip(range(5), range(5)), 2, 2)
+            sage: p.row(0)
             ([0, 1, 2, 3, 4], [0.0, 1.0, 2.0, 3.0, 4.0])
-            sage: p.row_bounds(0)                              # optional - cbc
+            sage: p.row_bounds(0)
             (2.0, 2.0)
         """
 
@@ -646,13 +646,13 @@ cdef class CoinBackend(GenericBackend):
         EXAMPLES::
 
             sage: from sage.numerical.backends.generic_backend import get_solver
-            sage: p = get_solver(solver = "Coin")  # optional - cbc
-            sage: p.add_variable()                                 # optional - cbc
+            sage: p = get_solver(solver = "Coin")
+            sage: p.add_variable()
             0
-            sage: p.col_bounds(0)                              # optional - cbc
+            sage: p.col_bounds(0)
             (0.0, None)
-            sage: p.variable_upper_bound(0, 5)                         # optional - cbc
-            sage: p.col_bounds(0)                              # optional - cbc
+            sage: p.variable_upper_bound(0, 5)
+            sage: p.col_bounds(0)
             (0.0, 5.0)
         """
 
@@ -689,14 +689,14 @@ cdef class CoinBackend(GenericBackend):
         EXAMPLES::
 
             sage: from sage.numerical.backends.generic_backend import get_solver
-            sage: p = get_solver(solver = "Coin")  # optional - cbc
-            sage: p.ncols()                                       # optional - cbc
+            sage: p = get_solver(solver = "Coin")
+            sage: p.ncols()
             0
-            sage: p.nrows()                                       # optional - cbc
+            sage: p.nrows()
             0
-            sage: p.add_linear_constraints(5, 0, None)                      # optional - cbc
-            sage: p.add_col(list(range(5)), list(range(5)))                    # optional - cbc
-            sage: p.nrows()                                       # optional - cbc
+            sage: p.add_linear_constraints(5, 0, None)
+            sage: p.add_col(list(range(5)), list(range(5)))
+            sage: p.nrows()
             5
         """
 
@@ -742,22 +742,22 @@ cdef class CoinBackend(GenericBackend):
         EXAMPLES::
 
             sage: from sage.numerical.backends.generic_backend import get_solver
-            sage: p = get_solver(solver = "Coin")    # optional - cbc
-            sage: p.add_linear_constraints(5, 0, None)       # optional - cbc
-            sage: p.add_col(list(range(5)), [1,2,3,4,5])  # optional - cbc
-            sage: p.solve()                         # optional - cbc
+            sage: p = get_solver(solver = "Coin")
+            sage: p.add_linear_constraints(5, 0, None)
+            sage: p.add_col(list(range(5)), [1,2,3,4,5])
+            sage: p.solve()
             0
 
         TESTS::
 
             sage: from sage.numerical.backends.generic_backend import get_solver
-            sage: p = get_solver(solver = "Coin")    # optional - cbc
-            sage: p.add_variable()                  # optional - cbc
+            sage: p = get_solver(solver = "Coin")
+            sage: p.add_variable()
             0
-            sage: p.add_linear_constraint([(0, 1)], None, 4) # optional - cbc
-            sage: p.add_linear_constraint([(0, 1)], 6, None) # optional - cbc
-            sage: p.objective_coefficient(0,1)        # optional - cbc
-            sage: p.solve()                         # optional - cbc
+            sage: p.add_linear_constraint([(0, 1)], None, 4)
+            sage: p.add_linear_constraint([(0, 1)], 6, None)
+            sage: p.objective_coefficient(0,1)
+            sage: p.solve()
             Traceback (most recent call last):
             ...
             MIPSolverException: ...
@@ -812,18 +812,18 @@ cdef class CoinBackend(GenericBackend):
         EXAMPLES::
 
             sage: from sage.numerical.backends.generic_backend import get_solver
-            sage: p = get_solver(solver = "Coin")  # optional - cbc
-            sage: p.add_variables(2)                               # optional - cbc
+            sage: p = get_solver(solver = "Coin")
+            sage: p.add_variables(2)
             1
-            sage: p.add_linear_constraint([(0, 1), (1, 2)], None, 3)          # optional - cbc
-            sage: p.set_objective([2, 5])                          # optional - cbc
-            sage: p.solve()                                        # optional - cbc
+            sage: p.add_linear_constraint([(0, 1), (1, 2)], None, 3)
+            sage: p.set_objective([2, 5])
+            sage: p.solve()
             0
-            sage: p.get_objective_value()                          # optional - cbc
+            sage: p.get_objective_value()
             7.5
-            sage: p.get_variable_value(0)                          # optional - cbc
+            sage: p.get_variable_value(0)
             0.0
-            sage: p.get_variable_value(1)                          # optional - cbc
+            sage: p.get_variable_value(1)
             1.5
         """
         return self.model.solver().getObjValue() + <double>self.obj_constant_term
@@ -839,23 +839,23 @@ cdef class CoinBackend(GenericBackend):
         EXAMPLES::
 
             sage: from sage.numerical.backends.generic_backend import get_solver
-            sage: p = get_solver(solver = "Coin") # optional - cbc
-            sage: p.add_variables(2)                              # optional - cbc
+            sage: p = get_solver(solver = "Coin")
+            sage: p.add_variables(2)
             1
-            sage: p.add_linear_constraint([(0, 1), (1, 2)], None, 3)          # optional - cbc
-            sage: p.set_objective([2, 5])                         # optional - cbc
-            sage: p.solve()                                       # optional - cbc
+            sage: p.add_linear_constraint([(0, 1), (1, 2)], None, 3)
+            sage: p.set_objective([2, 5])
+            sage: p.solve()
             0
-            sage: p.get_objective_value()                         # optional - cbc
+            sage: p.get_objective_value()
             7.5
-            sage: p.get_variable_value(0)                         # optional - cbc
+            sage: p.get_variable_value(0)
             0.0
-            sage: p.get_variable_value(1)                         # optional - cbc
+            sage: p.get_variable_value(1)
             1.5
-            sage: p = MixedIntegerLinearProgram("Coin")  # optional - cbc
-            sage: x = p.new_variable(nonnegative=True)   # optional - cbc
-            sage: p.set_min(x[0], 0.0)            # optional - cbc
-            sage: p.get_values(x)                 # optional - cbc
+            sage: p = MixedIntegerLinearProgram("Coin")
+            sage: x = p.new_variable(nonnegative=True)
+            sage: p.set_min(x[0], 0.0)
+            sage: p.get_values(x)
             {0: 0.0}
         """
 
@@ -878,12 +878,12 @@ cdef class CoinBackend(GenericBackend):
         EXAMPLES::
 
             sage: from sage.numerical.backends.generic_backend import get_solver
-            sage: p = get_solver(solver = "Coin")  # optional - cbc
-            sage: p.ncols()                                       # optional - cbc
+            sage: p = get_solver(solver = "Coin")
+            sage: p.ncols()
             0
-            sage: p.add_variables(2)                               # optional - cbc
+            sage: p.add_variables(2)
             1
-            sage: p.ncols()                                       # optional - cbc
+            sage: p.ncols()
             2
         """
 
@@ -896,11 +896,11 @@ cdef class CoinBackend(GenericBackend):
         EXAMPLES::
 
             sage: from sage.numerical.backends.generic_backend import get_solver
-            sage: p = get_solver(solver = "Coin") # optional - cbc
-            sage: p.nrows()                                      # optional - cbc
+            sage: p = get_solver(solver = "Coin")
+            sage: p.nrows()
             0
-            sage: p.add_linear_constraints(2, 2, None)                     # optional - cbc
-            sage: p.nrows()                                      # optional - cbc
+            sage: p.add_linear_constraints(2, 2, None)
+            sage: p.nrows()
             2
         """
         return self.si.getNumRows()
@@ -917,13 +917,13 @@ cdef class CoinBackend(GenericBackend):
         EXAMPLES::
 
             sage: from sage.numerical.backends.generic_backend import get_solver
-            sage: p = get_solver(solver = "Coin")  # optional - cbc
-            sage: p.ncols()                                       # optional - cbc
+            sage: p = get_solver(solver = "Coin")
+            sage: p.ncols()
             0
-            sage: p.add_variable()                                 # optional - cbc
+            sage: p.add_variable()
             0
-            sage: p.set_variable_type(0,0)                         # optional - cbc
-            sage: p.is_variable_binary(0)                          # optional - cbc
+            sage: p.set_variable_type(0,0)
+            sage: p.is_variable_binary(0)
             True
 
         """
@@ -943,13 +943,13 @@ cdef class CoinBackend(GenericBackend):
         EXAMPLES::
 
             sage: from sage.numerical.backends.generic_backend import get_solver
-            sage: p = get_solver(solver = "Coin")  # optional - cbc
-            sage: p.ncols()                                       # optional - cbc
+            sage: p = get_solver(solver = "Coin")
+            sage: p.ncols()
             0
-            sage: p.add_variable()                                 # optional - cbc
+            sage: p.add_variable()
             0
-            sage: p.set_variable_type(0,1)                         # optional - cbc
-            sage: p.is_variable_integer(0)                         # optional - cbc
+            sage: p.set_variable_type(0,1)
+            sage: p.is_variable_integer(0)
             True
         """
         return (0 == self.si.isContinuous(index) and
@@ -967,15 +967,15 @@ cdef class CoinBackend(GenericBackend):
         EXAMPLES::
 
             sage: from sage.numerical.backends.generic_backend import get_solver
-            sage: p = get_solver(solver = "Coin")  # optional - cbc
-            sage: p.ncols()                                       # optional - cbc
+            sage: p = get_solver(solver = "Coin")
+            sage: p.ncols()
             0
-            sage: p.add_variable()                                 # optional - cbc
+            sage: p.add_variable()
             0
-            sage: p.is_variable_continuous(0)                      # optional - cbc
+            sage: p.is_variable_continuous(0)
             True
-            sage: p.set_variable_type(0,1)                         # optional - cbc
-            sage: p.is_variable_continuous(0)                      # optional - cbc
+            sage: p.set_variable_type(0,1)
+            sage: p.is_variable_continuous(0)
             False
 
         """
@@ -989,11 +989,11 @@ cdef class CoinBackend(GenericBackend):
         EXAMPLES::
 
             sage: from sage.numerical.backends.generic_backend import get_solver
-            sage: p = get_solver(solver = "Coin") # optional - cbc
-            sage: p.is_maximization()                             # optional - cbc
+            sage: p = get_solver(solver = "Coin")
+            sage: p.is_maximization()
             True
-            sage: p.set_sense(-1)                             # optional - cbc
-            sage: p.is_maximization()                             # optional - cbc
+            sage: p.set_sense(-1)
+            sage: p.is_maximization()
             False
         """
 
@@ -1014,24 +1014,24 @@ cdef class CoinBackend(GenericBackend):
         EXAMPLES::
 
             sage: from sage.numerical.backends.generic_backend import get_solver
-            sage: p = get_solver(solver = "Coin")  # optional - cbc
-            sage: p.add_variable()                                 # optional - cbc
+            sage: p = get_solver(solver = "Coin")
+            sage: p.add_variable()
             0
-            sage: p.col_bounds(0)                              # optional - cbc
+            sage: p.col_bounds(0)
             (0.0, None)
-            sage: p.variable_upper_bound(0, 5)                         # optional - cbc
-            sage: p.col_bounds(0)                              # optional - cbc
+            sage: p.variable_upper_bound(0, 5)
+            sage: p.col_bounds(0)
             (0.0, 5.0)
 
         TESTS:
 
         :trac:`14581`::
 
-            sage: P = MixedIntegerLinearProgram(solver="Coin") # optional - cbc
-            sage: v = P.new_variable(nonnegative=True)         # optional - cbc
-            sage: x = v["x"]                                   # optional - cbc
-            sage: P.set_max(x, 0)                              # optional - cbc
-            sage: P.get_max(x)                                 # optional - cbc
+            sage: P = MixedIntegerLinearProgram(solver="Coin")
+            sage: v = P.new_variable(nonnegative=True)
+            sage: x = v["x"]
+            sage: P.set_max(x, 0)
+            sage: P.get_max(x)
             0.0
 
         """
@@ -1058,25 +1058,25 @@ cdef class CoinBackend(GenericBackend):
         EXAMPLES::
 
             sage: from sage.numerical.backends.generic_backend import get_solver
-            sage: p = get_solver(solver = "Coin")  # optional - cbc
-            sage: p.add_variable()                                 # optional - cbc
+            sage: p = get_solver(solver = "Coin")
+            sage: p.add_variable()
             0
-            sage: p.col_bounds(0)                              # optional - cbc
+            sage: p.col_bounds(0)
             (0.0, None)
-            sage: p.variable_lower_bound(0, 5)                         # optional - cbc
-            sage: p.col_bounds(0)                              # optional - cbc
+            sage: p.variable_lower_bound(0, 5)
+            sage: p.col_bounds(0)
             (5.0, None)
 
         TESTS:
 
         :trac:`14581`::
 
-            sage: P = MixedIntegerLinearProgram(solver="Coin") # optional - cbc
-            sage: v = P.new_variable(nonnegative=True)         # optional - cbc
-            sage: x = v["x"]                                   # optional - cbc
-            sage: P.set_min(x, 5)                              # optional - cbc
-            sage: P.set_min(x, 0)                              # optional - cbc
-            sage: P.get_min(x)                                 # optional - cbc
+            sage: P = MixedIntegerLinearProgram(solver="Coin")
+            sage: v = P.new_variable(nonnegative=True)
+            sage: x = v["x"]
+            sage: P.set_min(x, 5)
+            sage: P.set_min(x, 0)
+            sage: P.get_min(x)
             0.0
         """
         cdef double * lb
@@ -1098,12 +1098,12 @@ cdef class CoinBackend(GenericBackend):
         EXAMPLES::
 
             sage: from sage.numerical.backends.generic_backend import get_solver
-            sage: p = get_solver(solver = "Coin")  # optional - cbc
-            sage: p.add_variables(2)                               # optional - cbc
+            sage: p = get_solver(solver = "Coin")
+            sage: p.add_variables(2)
             1
-            sage: p.add_linear_constraint([(0, 1), (1, 2)], None, 3)          # optional - cbc
-            sage: p.set_objective([2, 5])                          # optional - cbc
-            sage: p.write_mps(os.path.join(SAGE_TMP, "lp_problem.mps"), 0)       # optional - cbc
+            sage: p.add_linear_constraint([(0, 1), (1, 2)], None, 3)
+            sage: p.set_objective([2, 5])
+            sage: p.write_mps(os.path.join(SAGE_TMP, "lp_problem.mps"), 0)
         """
 
         cdef char * mps = "mps"
@@ -1121,12 +1121,12 @@ cdef class CoinBackend(GenericBackend):
         EXAMPLES::
 
             sage: from sage.numerical.backends.generic_backend import get_solver
-            sage: p = get_solver(solver = "Coin")  # optional - cbc
-            sage: p.add_variables(2)                               # optional - cbc
+            sage: p = get_solver(solver = "Coin")
+            sage: p.add_variables(2)
             1
-            sage: p.add_linear_constraint([(0, 1), (1, 2)], None, 3)          # optional - cbc
-            sage: p.set_objective([2, 5])                          # optional - cbc
-            sage: p.write_lp(os.path.join(SAGE_TMP, "lp_problem.lp"))       # optional - cbc
+            sage: p.add_linear_constraint([(0, 1), (1, 2)], None, 3)
+            sage: p.set_objective([2, 5])
+            sage: p.write_lp(os.path.join(SAGE_TMP, "lp_problem.lp"))
         """
 
         cdef char * lp = "lp"
@@ -1145,9 +1145,9 @@ cdef class CoinBackend(GenericBackend):
         EXAMPLES::
 
             sage: from sage.numerical.backends.generic_backend import get_solver
-            sage: p = get_solver(solver = "Coin")   # optional - cbc
-            sage: p.problem_name("There once was a french fry") # optional - cbc
-            sage: print(p.problem_name())                       # optional - cbc
+            sage: p = get_solver(solver = "Coin")
+            sage: p.problem_name("There once was a french fry")
+            sage: print(p.problem_name())
             There once was a french fry
         """
         if name is None:
@@ -1170,9 +1170,9 @@ cdef class CoinBackend(GenericBackend):
         EXAMPLES::
 
             sage: from sage.numerical.backends.generic_backend import get_solver
-            sage: p = get_solver(solver = "Coin")                                     # optional - cbc
-            sage: p.add_linear_constraints(1, 2, None, names=['Empty constraint 1'])  # optional - cbc
-            sage: print(p.row_name(0))                                                # optional - cbc
+            sage: p = get_solver(solver = "Coin")
+            sage: p.add_linear_constraints(1, 2, None, names=['Empty constraint 1'])
+            sage: print(p.row_name(0))
             Empty constraint 1
         """
         if self.row_names is not None:
@@ -1191,10 +1191,10 @@ cdef class CoinBackend(GenericBackend):
         EXAMPLES::
 
             sage: from sage.numerical.backends.generic_backend import get_solver
-            sage: p = get_solver(solver = "Coin")          # optional - cbc
-            sage: p.add_variable(name='I am a variable')   # optional - cbc
+            sage: p = get_solver(solver = "Coin")
+            sage: p.add_variable(name='I am a variable')
             0
-            sage: print(p.col_name(0))                     # optional - cbc
+            sage: print(p.col_name(0))
             I am a variable
         """
         if self.col_names is not None:
@@ -1209,11 +1209,11 @@ cdef class CoinBackend(GenericBackend):
         EXAMPLES::
 
             sage: from sage.numerical.backends.generic_backend import get_solver
-            sage: p = MixedIntegerLinearProgram(solver = "Coin")        # optional - cbc
-            sage: b = p.new_variable(nonnegative=True)                  # optional - cbc
-            sage: p.add_constraint(b[1] + b[2] <= 6)           # optional - cbc
-            sage: p.set_objective(b[1] + b[2])                 # optional - cbc
-            sage: copy(p).solve()                              # optional - cbc
+            sage: p = MixedIntegerLinearProgram(solver = "Coin")
+            sage: b = p.new_variable(nonnegative=True)
+            sage: p.add_constraint(b[1] + b[2] <= 6)
+            sage: p.set_objective(b[1] + b[2])
+            sage: copy(p).solve()
             6.0
         """
         # create new backend
@@ -1260,52 +1260,52 @@ cdef class CoinBackend(GenericBackend):
         EXAMPLES::
 
             sage: from sage.numerical.backends.generic_backend import get_solver
-            sage: p = get_solver(solver = "Coin")                 # optional - cbc
-            sage: p.add_variables(2)                              # optional - cbc
+            sage: p = get_solver(solver = "Coin")
+            sage: p.add_variables(2)
             1
-            sage: p.add_linear_constraint([(0, 2), (1, 3)], None, 6) # optional - cbc
-            sage: p.add_linear_constraint([(0, 3), (1, 2)], None, 6) # optional - cbc
-            sage: p.set_objective([1, 1], 7)                      # optional - cbc
-            sage: p.solve()                                       # optional - cbc
+            sage: p.add_linear_constraint([(0, 2), (1, 3)], None, 6)
+            sage: p.add_linear_constraint([(0, 3), (1, 2)], None, 6)
+            sage: p.set_objective([1, 1], 7)
+            sage: p.solve()
             0
-            sage: p.get_basis_status()                            # optional - cbc
+            sage: p.get_basis_status()
             ([1, 1], [3, 3])
 
-            sage: p = get_solver(solver = "Coin")                  # optional - cbc
-            sage: p.add_variables(2)                               # optional - cbc
+            sage: p = get_solver(solver = "Coin")
+            sage: p.add_variables(2)
             1
-            sage: p.add_linear_constraint([(0, 2), (1, -3)], None, 6) # optional - cbc
-            sage: p.add_linear_constraint([(0, 3), (1, 2)], None, 6)  # optional - cbc
-            sage: p.set_objective([1, 1])                          # optional - cbc
-            sage: p.solve()                                        # optional - cbc
+            sage: p.add_linear_constraint([(0, 2), (1, -3)], None, 6)
+            sage: p.add_linear_constraint([(0, 3), (1, 2)], None, 6)
+            sage: p.set_objective([1, 1])
+            sage: p.solve()
             0
-            sage: p.get_basis_status()                             # optional - cbc
+            sage: p.get_basis_status()
             ([3, 1], [1, 3])
 
-            sage: p = get_solver(solver = "Coin")                 # optional - cbc
-            sage: p.add_variables(3)                              # optional - cbc
+            sage: p = get_solver(solver = "Coin")
+            sage: p.add_variables(3)
             2
-            sage: p.add_linear_constraint(zip([0, 1, 2], [8, 6, 1]), None, 48)          # optional - cbc
-            sage: p.add_linear_constraint(zip([0, 1, 2], [4, 2, 1.5]), None, 20)        # optional - cbc
-            sage: p.add_linear_constraint(zip([0, 1, 2], [2, 1.5, 0.5]), None, 8)       # optional - cbc
-            sage: p.set_objective([60, 30, 20])                   # optional - cbc
-            sage: p.solve()                                       # optional - cbc
+            sage: p.add_linear_constraint(zip([0, 1, 2], [8, 6, 1]), None, 48)
+            sage: p.add_linear_constraint(zip([0, 1, 2], [4, 2, 1.5]), None, 20)
+            sage: p.add_linear_constraint(zip([0, 1, 2], [2, 1.5, 0.5]), None, 8)
+            sage: p.set_objective([60, 30, 20])
+            sage: p.solve()
             0
-            sage: p.get_basis_status()                            # optional - cbc
+            sage: p.get_basis_status()
             ([1, 3, 1], [1, 3, 3])
 
 
-            sage: lp = MixedIntegerLinearProgram(solver='Coin')   # optional - cbc
-            sage: v = lp.new_variable(nonnegative=True)           # optional - cbc
-            sage: x,y,z = v[0], v[1], v[2]                        # optional - cbc
-            sage: lp.add_constraint(8*x + 6*y + z, max = 48)      # optional - cbc
-            sage: lp.add_constraint(4*x + 2*y + 1.5*z, max = 20)  # optional - cbc
-            sage: lp.add_constraint(2*x + 1.5*y + 0.5*z, max = 8) # optional - cbc
-            sage: lp.set_objective(60*x + 30*y + 20*z)            # optional - cbc
-            sage: lp_coin = lp.get_backend()                      # optional - cbc
-            sage: lp_coin.solve()                                 # optional - cbc
+            sage: lp = MixedIntegerLinearProgram(solver='Coin')
+            sage: v = lp.new_variable(nonnegative=True)
+            sage: x,y,z = v[0], v[1], v[2]
+            sage: lp.add_constraint(8*x + 6*y + z, max = 48)
+            sage: lp.add_constraint(4*x + 2*y + 1.5*z, max = 20)
+            sage: lp.add_constraint(2*x + 1.5*y + 0.5*z, max = 8)
+            sage: lp.set_objective(60*x + 30*y + 20*z)
+            sage: lp_coin = lp.get_backend()
+            sage: lp_coin.solve()
             0
-            sage: lp_coin.get_basis_status()                      # optional - cbc
+            sage: lp_coin.get_basis_status()
             ([1, 3, 1], [1, 3, 3])
 
         """
@@ -1366,50 +1366,50 @@ cdef class CoinBackend(GenericBackend):
 
             sage: from sage.numerical.backends.generic_backend import get_solver
 
-            sage: p = get_solver(solver = "Coin")                  # optional - cbc
-            sage: p.add_variables(2)                               # optional - cbc
+            sage: p = get_solver(solver = "Coin")
+            sage: p.add_variables(2)
             1
-            sage: p.add_linear_constraint([(0, 2), (1, -3)], None, 6) # optional - cbc
-            sage: p.add_linear_constraint([(0, 3), (1, 2)], None, 6)  # optional - cbc
-            sage: p.set_objective([1, 1])                          # optional - cbc
+            sage: p.add_linear_constraint([(0, 2), (1, -3)], None, 6)
+            sage: p.add_linear_constraint([(0, 3), (1, 2)], None, 6)
+            sage: p.set_objective([1, 1])
 
-            sage: p.set_basis_status([3, 3], [1, 1])               # optional - cbc
+            sage: p.set_basis_status([3, 3], [1, 1])
             0
-            sage: p.get_objective_value()                          # optional - cbc
+            sage: p.get_objective_value()
             0.0
-            sage: p.set_basis_status([1, 3], [1, 3])               # optional - cbc
+            sage: p.set_basis_status([1, 3], [1, 3])
             0
-            sage: p.get_objective_value()                          # optional - cbc
+            sage: p.get_objective_value()
             2.0
-            sage: p.set_basis_status([3, 1], [1, 3])               # optional - cbc
+            sage: p.set_basis_status([3, 1], [1, 3])
             0
-            sage: p.get_objective_value()                          # optional - cbc
+            sage: p.get_objective_value()
             3.0
-            sage: p.get_basis_status()                             # optional - cbc
+            sage: p.get_basis_status()
             ([3, 1], [1, 3])
 
-            sage: p = get_solver(solver = "Coin")                 # optional - cbc
-            sage: p.add_variables(3)                              # optional - cbc
+            sage: p = get_solver(solver = "Coin")
+            sage: p.add_variables(3)
             2
-            sage: p.add_linear_constraint(zip([0, 1, 2], [8, 6, 1]), None, 48)          # optional - cbc
-            sage: p.add_linear_constraint(zip([0, 1, 2], [4, 2, 1.5]), None, 20)        # optional - cbc
-            sage: p.add_linear_constraint(zip([0, 1, 2], [2, 1.5, 0.5]), None, 8)       # optional - cbc
-            sage: p.set_objective([60, 30, 20])                   # optional - cbc
-            sage: p.set_basis_status([3, 3, 3], [1, 1, 1])        # optional - cbc
+            sage: p.add_linear_constraint(zip([0, 1, 2], [8, 6, 1]), None, 48)
+            sage: p.add_linear_constraint(zip([0, 1, 2], [4, 2, 1.5]), None, 20)
+            sage: p.add_linear_constraint(zip([0, 1, 2], [2, 1.5, 0.5]), None, 8)
+            sage: p.set_objective([60, 30, 20])
+            sage: p.set_basis_status([3, 3, 3], [1, 1, 1])
             0
-            sage: p.get_objective_value()                         # optional - cbc
+            sage: p.get_objective_value()
             0.0
-            sage: p.set_basis_status([1, 3, 3], [1, 1, 3])        # optional - cbc
+            sage: p.set_basis_status([1, 3, 3], [1, 1, 3])
             0
-            sage: p.get_objective_value()                         # optional - cbc
+            sage: p.get_objective_value()
             240.0
-            sage: p.get_basis_status()                            # optional - cbc
+            sage: p.get_basis_status()
             ([1, 3, 3], [1, 1, 3])
-            sage: p.set_basis_status([1, 3, 1], [1, 3, 2])        # optional - cbc
+            sage: p.set_basis_status([1, 3, 1], [1, 3, 2])
             0
-            sage: p.get_basis_status()                            # optional - cbc
+            sage: p.get_basis_status()
             ([1, 3, 1], [1, 3, 3])
-            sage: p.get_objective_value()                         # optional - cbc
+            sage: p.get_objective_value()
             280.0
         """
         cdef int n = len(cstat)
@@ -1475,32 +1475,32 @@ cdef class CoinBackend(GenericBackend):
 
             sage: from sage.numerical.backends.generic_backend import get_solver
 
-            sage: p = get_solver(solver = "Coin")                  # optional - cbc
-            sage: p.add_variables(2)                               # optional - cbc
+            sage: p = get_solver(solver = "Coin")
+            sage: p.add_variables(2)
             1
-            sage: p.add_linear_constraint([(0, 2), (1, -3)], None, 6) # optional - cbc
-            sage: p.add_linear_constraint([(0, 3), (1, 2)], None, 6)  # optional - cbc
-            sage: p.set_objective([1, 1])                          # optional - cbc
+            sage: p.add_linear_constraint([(0, 2), (1, -3)], None, 6)
+            sage: p.add_linear_constraint([(0, 3), (1, 2)], None, 6)
+            sage: p.set_objective([1, 1])
 
-            sage: p.set_basis_status([3, 3], [1, 1])               # optional - cbc
+            sage: p.set_basis_status([3, 3], [1, 1])
             0
-            sage: p.get_binva_row(0)                               # optional - cbc
+            sage: p.get_binva_row(0)
             ([2.0, -3.0], [1.0, 0.0])
-            sage: p.get_binva_row(1)                               # optional - cbc
+            sage: p.get_binva_row(1)
             ([3.0, 2.0], [0.0, 1.0])
 
-            sage: p.set_basis_status([1, 3], [1, 3])               # optional - cbc
+            sage: p.set_basis_status([1, 3], [1, 3])
             0
-            sage: p.get_binva_row(0)                               # optional - cbc
+            sage: p.get_binva_row(0)
             ([0.0, -4.333333333333333], [1.0, -0.6666666666666666])
-            sage: p.get_binva_row(1)                               # optional - cbc
+            sage: p.get_binva_row(1)
             ([1.0, 0.6666666666666666], [0.0, 0.3333333333333333])
 
-            sage: p.set_basis_status([3, 1], [1, 3])               # optional - cbc
+            sage: p.set_basis_status([3, 1], [1, 3])
             0
-            sage: p.get_binva_row(0)                               # optional - cbc
+            sage: p.get_binva_row(0)
             ([6.5, 0.0], [1.0, 1.5])
-            sage: p.get_binva_row(1)                               # optional - cbc
+            sage: p.get_binva_row(1)
             ([1.5, 1.0], [0.0, 0.5])
 
         """
@@ -1538,32 +1538,32 @@ cdef class CoinBackend(GenericBackend):
 
             sage: from sage.numerical.backends.generic_backend import get_solver
 
-            sage: p = get_solver(solver = "Coin")                  # optional - cbc
-            sage: p.add_variables(2)                               # optional - cbc
+            sage: p = get_solver(solver = "Coin")
+            sage: p.add_variables(2)
             1
-            sage: p.add_linear_constraint([(0, 2), (1, -3)], None, 6) # optional - cbc
-            sage: p.add_linear_constraint([(0, 3), (1, 2)], None, 6)  # optional - cbc
-            sage: p.set_objective([1, 1])                          # optional - cbc
+            sage: p.add_linear_constraint([(0, 2), (1, -3)], None, 6)
+            sage: p.add_linear_constraint([(0, 3), (1, 2)], None, 6)
+            sage: p.set_objective([1, 1])
 
-            sage: p.set_basis_status([3, 3], [1, 1])               # optional - cbc
+            sage: p.set_basis_status([3, 3], [1, 1])
             0
-            sage: p.get_binva_col(0)                               # optional - cbc
+            sage: p.get_binva_col(0)
             [2.0, 3.0]
-            sage: p.get_binva_col(1)                               # optional - cbc
+            sage: p.get_binva_col(1)
             [-3.0, 2.0]
 
-            sage: p.set_basis_status([1, 3], [1, 3])               # optional - cbc
+            sage: p.set_basis_status([1, 3], [1, 3])
             0
-            sage: p.get_binva_col(0)                               # optional - cbc
+            sage: p.get_binva_col(0)
             [-0.0, 1.0]
-            sage: p.get_binva_col(1)                               # optional - cbc
+            sage: p.get_binva_col(1)
             [-4.333333333333333, 0.6666666666666666]
 
-            sage: p.set_basis_status([3, 1], [1, 3])               # optional - cbc
+            sage: p.set_basis_status([3, 1], [1, 3])
             0
-            sage: p.get_binva_col(0)                               # optional - cbc
+            sage: p.get_binva_col(0)
             [6.5, 1.5]
-            sage: p.get_binva_col(1)                               # optional - cbc
+            sage: p.get_binva_col(1)
             [-0.0, 1.0]
         """
         cdef int n = self.model.solver().getNumCols()
@@ -1605,15 +1605,15 @@ cdef class CoinBackend(GenericBackend):
         EXAMPLES::
 
             sage: from sage.numerical.backends.generic_backend import get_solver
-            sage: p = get_solver(solver = "Coin")                  # optional - cbc
-            sage: p.add_variables(2)                               # optional - cbc
+            sage: p = get_solver(solver = "Coin")
+            sage: p.add_variables(2)
             1
-            sage: p.add_linear_constraint([(0, 2), (1, -3)], None, 6) # optional - cbc
-            sage: p.add_linear_constraint([(0, 3), (1, 2)], None, 6)  # optional - cbc
-            sage: p.set_objective([1, 1])                          # optional - cbc
-            sage: p.solve()                                        # optional - cbc
+            sage: p.add_linear_constraint([(0, 2), (1, -3)], None, 6)
+            sage: p.add_linear_constraint([(0, 3), (1, 2)], None, 6)
+            sage: p.set_objective([1, 1])
+            sage: p.solve()
             0
-            sage: p.get_basics()                                   # optional - cbc
+            sage: p.get_basics()
             [2, 1]
         """
         cdef int m = self.model.solver().getNumRows()
@@ -1644,15 +1644,15 @@ cdef class CoinBackend(GenericBackend):
         EXAMPLES::
 
             sage: from sage.numerical.backends.generic_backend import get_solver
-            sage: p = get_solver(solver = "Coin")                  # optional - cbc
-            sage: p.add_variables(2)                               # optional - cbc
+            sage: p = get_solver(solver = "Coin")
+            sage: p.add_variables(2)
             1
-            sage: p.add_linear_constraint([(0, 2), (1, -3)], None, 6) # optional - cbc
-            sage: p.add_linear_constraint([(0, 3), (1, 2)], None, 6)  # optional - cbc
-            sage: p.set_objective([1, 1])                          # optional - cbc
-            sage: p.solve()                                        # optional - cbc
+            sage: p.add_linear_constraint([(0, 2), (1, -3)], None, 6)
+            sage: p.add_linear_constraint([(0, 3), (1, 2)], None, 6)
+            sage: p.set_objective([1, 1])
+            sage: p.solve()
             0
-            sage: p.get_row_price()                                # optional - cbc
+            sage: p.get_row_price()
             [0.0, -0.5]
         """
         cdef int m = self.model.solver().getNumRows()
@@ -1681,15 +1681,15 @@ cdef class CoinBackend(GenericBackend):
         EXAMPLES::
 
             sage: from sage.numerical.backends.generic_backend import get_solver
-            sage: p = get_solver(solver = "Coin")                  # optional - cbc
-            sage: p.add_variables(2)                               # optional - cbc
+            sage: p = get_solver(solver = "Coin")
+            sage: p.add_variables(2)
             1
-            sage: p.add_linear_constraint([(0, 2), (1, -3)], None, 6) # optional - cbc
-            sage: p.add_linear_constraint([(0, 3), (1, 2)], None, 6)  # optional - cbc
-            sage: p.set_objective([1, 1])                          # optional - cbc
-            sage: p.solve()                                        # optional - cbc
+            sage: p.add_linear_constraint([(0, 2), (1, -3)], None, 6)
+            sage: p.add_linear_constraint([(0, 3), (1, 2)], None, 6)
+            sage: p.set_objective([1, 1])
+            sage: p.solve()
             0
-            sage: p.get_reduced_cost()                             # optional - cbc
+            sage: p.get_reduced_cost()
             [0.5, 0.0]
         """
         cdef int n = self.model.solver().getNumCols()
