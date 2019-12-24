@@ -5,7 +5,7 @@ on: [push]
 jobs:
   build:
     runs-on: ubuntu-latest
-    container: sagemath/sagemath-develop
+    container: sagemath/sagemath
     steps:
       - uses: actions/checkout@v1
       - name: Test package
