@@ -77,7 +77,7 @@ setup(
     version=readfile("VERSION").strip(),
     description="Gurobi backend for Sage MixedIntegerLinearProgram",
     long_description = readfile("README.md"), # get the long description from the README
-    long_description_content_type='text/x-markdown', # https://packaging.python.org/guides/making-a-pypi-friendly-readme/
+    long_description_content_type='text/markdown', # https://packaging.python.org/guides/making-a-pypi-friendly-readme/
     url="https://github.com/mkoeppe/sage-numerical-backends-gurobi",
     # Author list obtained by running the following command on sage 9.0.beta9:
     # for f in gurobi_backend.p*; do git blame -w -M -C -C --line-porcelain "$f" | grep -I '^author '; done | sort -f | uniq -ic | sort -n
