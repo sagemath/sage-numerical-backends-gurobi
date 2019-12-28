@@ -19,7 +19,7 @@ Methods
 #*****************************************************************************
 #       Copyright (C) 2010-2014 Nathann Cohen <nathann.cohen@gmail.com>
 #       Copyright (C) 2012 John Perry <john.perry@usm.edu>
-#       Copyright (C) 2016 Matthias Koeppe <mkoeppe@math.ucdavis.edu>
+#       Copyright (C) 2016-2019 Matthias Koeppe <mkoeppe@math.ucdavis.edu>
 #       Copyright (C) 2017 Jori Mäntysalo <jori.mantysalo@uta.fi>
 #       Copyright (C) 2018 Erik M. Bray <erik.bray@lri.fr>
 #       Copyright (C( 2012-2019 Jeroen Demeyer <jeroen.k.demeyer@gmail.com>
@@ -34,8 +34,9 @@ Methods
 
 from cysignals.memory cimport sig_malloc, sig_free
 
-from sage.cpython.string cimport char_to_str, str_to_bytes
-from sage.cpython.string import FS_ENCODING
+IF HAVE_SAGE_CPYTHON_STRING:
+    from sage.cpython.string cimport char_to_str, str_to_bytes
+    from sage.cpython.string import FS_ENCODING
 from sage.numerical.mip import MIPSolverException
 
 cdef class GurobiBackend(GenericBackend):
@@ -209,41 +210,66 @@ cdef class GurobiBackend(GenericBackend):
 
         return self.ncols()-1
 
-    cpdef add_col(self, indices, coeffs):
-        """
-        Add a column.
+    IF HAVE_ADD_COL_UNTYPED_ARGS:
+        cpdef add_col(self, indices, coeffs):
+            """
+            Add a column.
 
-        INPUT:
+            INPUT:
 
-        - ``indices`` (list of integers) -- this list contains the
-          indices of the constraints in which the variable's
-          coefficient is nonzero
+            - ``indices`` (list of integers) -- this list contains the
+              indices of the constraints in which the variable's
+              coefficient is nonzero
 
-        - ``coeffs`` (list of real values) -- associates a coefficient
-          to the variable in each of the constraints in which it
-          appears. Namely, the i-th entry of ``coeffs`` corresponds to
-          the coefficient of the variable in the constraint
-          represented by the i-th entry in ``indices``.
+            - ``coeffs`` (list of real values) -- associates a coefficient
+              to the variable in each of the constraints in which it
+              appears. Namely, the i-th entry of ``coeffs`` corresponds to
+              the coefficient of the variable in the constraint
+              represented by the i-th entry in ``indices``.
 
-        .. NOTE::
+            .. NOTE::
 
-            ``indices`` and ``coeffs`` are expected to be of the same
-            length.
+                ``indices`` and ``coeffs`` are expected to be of the same
+                length.
 
-        EXAMPLES::
+            EXAMPLES::
 
-            sage: from sage_numerical_backends_gurobi.gurobi_backend import GurobiBackend
-            sage: p = GurobiBackend()
-            sage: p.ncols()
-            0
-            sage: p.nrows()
-            0
-            sage: p.add_linear_constraints(5, 0, None)
-            sage: p.add_col(list(range(5)), list(range(5)))
-            sage: p.nrows()
-            5
-        """
-        self.add_variable(coefficients = zip(indices, coeffs))
+                sage: from sage_numerical_backends_gurobi.gurobi_backend import GurobiBackend
+                sage: p = GurobiBackend()
+                sage: p.ncols()
+                0
+                sage: p.nrows()
+                0
+                sage: p.add_linear_constraints(5, 0, None)
+                sage: p.add_col(list(range(5)), list(range(5)))
+                sage: p.nrows()
+                5
+            """
+            self.add_variable(coefficients = zip(indices, coeffs))
+    ELSE:
+        cpdef add_col(self, list indices, list coeffs):
+            """
+            Add a column.
+
+            INPUT:
+
+            - ``indices`` (list of integers) -- this list contains the
+              indices of the constraints in which the variable's
+              coefficient is nonzero
+
+            - ``coeffs`` (list of real values) -- associates a coefficient
+              to the variable in each of the constraints in which it
+              appears. Namely, the i-th entry of ``coeffs`` corresponds to
+              the coefficient of the variable in the constraint
+              represented by the i-th entry in ``indices``.
+
+            .. NOTE::
+
+                ``indices`` and ``coeffs`` are expected to be of the same
+                length.
+
+            """
+            self.add_variable(coefficients = zip(indices, coeffs))
 
     cpdef set_variable_type(self, int variable, int vtype):
         """
@@ -349,45 +375,73 @@ cdef class GurobiBackend(GenericBackend):
             check(self.env, error)
             return value[0]
 
-    cpdef problem_name(self, name=None):
-        """
-        Return or define the problem's name
+    IF HAVE_SAGE_CPYTHON_STRING:
+        cpdef problem_name(self, name=None):
+            """
+            Return or define the problem's name
 
-        INPUT:
+            INPUT:
 
-        - ``name`` (``str``) -- the problem's name. When set to
-          ``None`` (default), the method returns the problem's name.
+            - ``name`` (``str``) -- the problem's name. When set to
+              ``None`` (default), the method returns the problem's name.
 
-        EXAMPLES::
+            EXAMPLES::
 
-            sage: from sage_numerical_backends_gurobi.gurobi_backend import GurobiBackend
-            sage: p = GurobiBackend()
-            sage: p.problem_name("There once was a french fry")
-            sage: print(p.problem_name())
-            There once was a french fry
+                sage: from sage_numerical_backends_gurobi.gurobi_backend import GurobiBackend
+                sage: p = GurobiBackend()
+                sage: p.problem_name("There once was a french fry")
+                sage: print(p.problem_name())
+                There once was a french fry
 
-        TESTS::
+            TESTS::
 
-            sage: from sage_numerical_backends_gurobi.gurobi_backend import GurobiBackend
-            sage: p = GurobiBackend()
-            sage: print(p.problem_name())
-        """
-        cdef int error
-        cdef char * pp_name[1]
+                sage: from sage_numerical_backends_gurobi.gurobi_backend import GurobiBackend
+                sage: p = GurobiBackend()
+                sage: print(p.problem_name())
+            """
+            cdef int error
+            cdef char * pp_name[1]
 
-        if name is not None:
-            error = GRBsetstrattr(self.model, "ModelName", str_to_bytes(name))
-            check(self.env, error)
-            check(self.env,GRBupdatemodel(self.model))
+            if name is not None:
+                error = GRBsetstrattr(self.model, "ModelName", str_to_bytes(name))
+                check(self.env, error)
+                check(self.env,GRBupdatemodel(self.model))
 
-        else:
-            check(self.env,GRBgetstrattr(self.model, "ModelName", <char **> pp_name))
-            if pp_name[0] == NULL:
-                value = ""
             else:
-                value = char_to_str(pp_name[0])
+                check(self.env,GRBgetstrattr(self.model, "ModelName", <char **> pp_name))
+                if pp_name[0] == NULL:
+                    value = ""
+                else:
+                    value = char_to_str(pp_name[0])
 
-            return value
+                return value
+    ELSE:
+        cpdef problem_name(self, char *name=NULL):
+            """
+            Return or define the problem's name
+
+            INPUT:
+
+            - ``name`` (``str``) -- the problem's name. When set to
+              ``None`` (default), the method returns the problem's name.
+
+            """
+            cdef int error
+            cdef char * pp_name[1]
+
+            if name != NULL:
+                error = GRBsetstrattr(self.model, "ModelName", str_to_bytes(name))
+                check(self.env, error)
+                check(self.env,GRBupdatemodel(self.model))
+
+            else:
+                check(self.env,GRBgetstrattr(self.model, "ModelName", <char **> pp_name))
+                if pp_name[0] == NULL:
+                    value = ""
+                else:
+                    value = char_to_str(pp_name[0])
+
+                return value
 
     cpdef set_objective(self, list coeff, d = 0.0):
         """
@@ -1061,47 +1115,71 @@ cdef class GurobiBackend(GenericBackend):
             check(self.env, error)
             return None if b[0] <= -GRB_INFINITY else b[0]
 
-    cpdef write_lp(self, filename):
-        """
-        Write the problem to a .lp file
+    IF HAVE_SAGE_CPYTHON_STRING:
+        cpdef write_lp(self, filename):
+            """
+            Write the problem to a .lp file
 
-        INPUT:
+            INPUT:
 
-        - ``filename`` (string)
+            - ``filename`` (string)
 
-        EXAMPLES::
+            EXAMPLES::
 
-            sage: from sage_numerical_backends_gurobi.gurobi_backend import GurobiBackend
-            sage: p = GurobiBackend()
-            sage: p.add_variables(2)
-            1
-            sage: p.add_linear_constraint([[0, 1], [1, 2]], None, 3)
-            sage: p.set_objective([2, 5])
-            sage: p.write_lp(os.path.join(SAGE_TMP, "lp_problem.lp"))
-        """
-        filename = str_to_bytes(filename, FS_ENCODING, 'surrogateescape')
-        check(self.env, GRBwrite(self.model, filename))
+                sage: from sage_numerical_backends_gurobi.gurobi_backend import GurobiBackend
+                sage: p = GurobiBackend()
+                sage: p.add_variables(2)
+                1
+                sage: p.add_linear_constraint([[0, 1], [1, 2]], None, 3)
+                sage: p.set_objective([2, 5])
+                sage: p.write_lp(os.path.join(SAGE_TMP, "lp_problem.lp"))
+            """
+            filename = str_to_bytes(filename, FS_ENCODING, 'surrogateescape')
+            check(self.env, GRBwrite(self.model, filename))
 
-    cpdef write_mps(self, filename, int modern):
-        """
-        Write the problem to a .mps file
+        cpdef write_mps(self, filename, int modern):
+            """
+            Write the problem to a .mps file
 
-        INPUT:
+            INPUT:
 
-        - ``filename`` (string)
+            - ``filename`` (string)
 
-        EXAMPLES::
+            EXAMPLES::
 
-            sage: from sage_numerical_backends_gurobi.gurobi_backend import GurobiBackend
-            sage: p = GurobiBackend()
-            sage: p.add_variables(2)
-            1
-            sage: p.add_linear_constraint([[0, 1], [1, 2]], None, 3)
-            sage: p.set_objective([2, 5])
-            sage: p.write_lp(os.path.join(SAGE_TMP, "lp_problem.lp"))
-        """
-        filename = str_to_bytes(filename, FS_ENCODING, 'surrogateescape')
-        check(self.env, GRBwrite(self.model, filename))
+                sage: from sage_numerical_backends_gurobi.gurobi_backend import GurobiBackend
+                sage: p = GurobiBackend()
+                sage: p.add_variables(2)
+                1
+                sage: p.add_linear_constraint([[0, 1], [1, 2]], None, 3)
+                sage: p.set_objective([2, 5])
+                sage: p.write_lp(os.path.join(SAGE_TMP, "lp_problem.lp"))
+            """
+            filename = str_to_bytes(filename, FS_ENCODING, 'surrogateescape')
+            check(self.env, GRBwrite(self.model, filename))
+    ELSE:
+        cpdef write_lp(self, char *filename):
+            """
+            Write the problem to a .lp file
+
+            INPUT:
+
+            - ``filename`` (string)
+
+            """
+            check(self.env, GRBwrite(self.model, filename))
+
+        cpdef write_mps(self, char *filename, int modern):
+            """
+            Write the problem to a .mps file
+
+            INPUT:
+
+            - ``filename`` (string)
+
+            """
+            check(self.env, GRBwrite(self.model, filename))
+
 
     cpdef solver_parameter(self, name, value = None):
         """
