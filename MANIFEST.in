@@ -1,3 +1,7 @@
 include LICENSE
 include VERSION
-include sage_numerical_backends_gurobi/*.pyx
+include *.py
+include *.pyx
+include */*.pyx
+exclude *.cpp
+exclude */*.cpp

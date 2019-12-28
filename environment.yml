@@ -10,6 +10,8 @@ channels:
   - conda-forge
   - defaults
 dependencies:
-  - python=3
+  - cxx-compiler
+  - python=3.7.3     # fixed to avoid https://github.com/ContinuumIO/anaconda-issues/issues/11195
   - sage>=8.9
   - pip
+  - setuptools

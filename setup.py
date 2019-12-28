@@ -10,13 +10,17 @@ from setuptools import setup
 from setuptools import Extension
 from setuptools.command.test import test as TestCommand # for tests
 from Cython.Build import cythonize
+from Cython.Compiler.Errors import CompileError
 from codecs import open # To open the README file with proper encoding
 from sage.env import sage_include_directories
 
 # For the tests
 class SageTest(TestCommand):
     def run_tests(self):
-        errno = os.system("sage -t --force-lib sage_numerical_backends_gurobi")
+        # Passing optional=sage avoids using sage.misc.package.list_packages,
+        # which gives an error on Debian unstable as of 2019-12-27:
+        # FileNotFoundError: [Errno 2] No such file or directory: '/usr/share/sagemath/build/pkgs'
+        errno = os.system("PYTHONPATH=`pwd` sage -t --force-lib --optional=sage sage_numerical_backends_gurobi")
         if errno != 0:
             sys.exit(1)
 
@@ -69,8 +73,36 @@ ext_modules = [Extension('sage_numerical_backends_gurobi.gurobi_backend',
                                      'gurobi_backend.pyx')],
                          include_dirs=sage_include_directories() + gurobi_include_directories,
                          libraries=gurobi_libs,
-                         library_dirs=gurobi_lib_directories)
+                         library_dirs=gurobi_lib_directories,
+                         extra_compile_args=['-std=c++11'])
     ]
+
+
+## SageMath 8.1 (included in Ubuntu bionic 18.04 LTS) does not have sage.cpython.string;
+## it was introduced in 8.2.
+compile_time_env = {'HAVE_SAGE_CPYTHON_STRING': False,
+                    'HAVE_ADD_COL_UNTYPED_ARGS': False}
+
+print("Checking whether HAVE_SAGE_CPYTHON_STRING...", file=sys.stderr)
+try:
+    import sage.cpython.string
+    compile_time_env['HAVE_SAGE_CPYTHON_STRING'] = True
+except ImportError:
+    pass
+
+## SageMath 8.7 changed the signature of add_col.
+print("Checking whether HAVE_ADD_COL_UNTYPED_ARGS...", file=sys.stderr)
+try:
+    cythonize(Extension('check_add_col_untyped_args',
+                        sources=['check_add_col_untyped_args.pyx'],
+                        include_dirs=sage_include_directories()),
+              quiet=True,
+              include_path=sys.path)
+    compile_time_env['HAVE_ADD_COL_UNTYPED_ARGS'] = True
+except CompileError:
+    pass
+
+print("Using compile_time_env: {}".format(compile_time_env), file=sys.stderr)
 
 setup(
     name="sage_numerical_backends_gurobi",
@@ -97,11 +129,13 @@ setup(
                  'Programming Language :: Python :: 3.6',
                  'Programming Language :: Python :: 3.7',
                  ],
-    ext_modules = cythonize(ext_modules, include_path=sys.path),
+    ext_modules = cythonize(ext_modules, include_path=sys.path,
+                            compile_time_env=compile_time_env),
     cmdclass = {'test': SageTest}, # adding a special setup command for tests
     keywords=['milp', 'linear-programming', 'optimization'],
     packages=['sage_numerical_backends_gurobi'],
     package_dir={'sage_numerical_backends_gurobi': 'sage_numerical_backends_gurobi'},
     package_data={'sage_numerical_backends_gurobi': ['*.pxd']},
-    install_requires = ['sage>=8', 'sage-package', 'sphinx'],
+    install_requires = [# 'sage>=8',    ### On too many distributions, sage is actually not known as a pip package
+                        'sphinx'],
 )
