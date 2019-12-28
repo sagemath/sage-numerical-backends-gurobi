@@ -1,7 +1,7 @@
 from __future__ import print_function
-# Check that the backend can be obtained by passing solver='coin' to get_solver.
+# Check that the backend can be obtained by passing solver='gurobi' to get_solver.
 from sage.numerical.backends.generic_backend import get_solver
-from sage_numerical_backends_coin.coin_backend import CoinBackend
-b = get_solver(solver='coin')
-assert type(b) == CoinBackend, "get_solver(solver='coin') does not give an instance of sage_numerical_backends_coin.coin_backend.CoinBackend"
-print("Success: get_solver(solver='coin') gives {}".format(b))
+from sage_numerical_backends_gurobi.gurobi_backend import GurobiBackend
+b = get_solver(solver='gurobi')
+assert type(b) == GurobiBackend, "get_solver(solver='gurobi') does not give an instance of sage_numerical_backends_gurobi.gurobi_backend.GurobiBackend"
+print("Success: get_solver(solver='gurobi') gives {}".format(b))

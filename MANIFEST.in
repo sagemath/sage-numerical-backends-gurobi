@@ -3,5 +3,7 @@ include VERSION
 include *.py
 include *.pyx
 include */*.pyx
+exclude *.c
 exclude *.cpp
+exclude */*.c
 exclude */*.cpp
