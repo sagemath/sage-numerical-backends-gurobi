@@ -73,8 +73,7 @@ ext_modules = [Extension('sage_numerical_backends_gurobi.gurobi_backend',
                                      'gurobi_backend.pyx')],
                          include_dirs=sage_include_directories() + gurobi_include_directories,
                          libraries=gurobi_libs,
-                         library_dirs=gurobi_lib_directories,
-                         extra_compile_args=['-std=c++11'])
+                         library_dirs=gurobi_lib_directories)
     ]
 
 
