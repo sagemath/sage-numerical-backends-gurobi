@@ -12,8 +12,19 @@ The present standalone Python package `sage-numerical-backends-gurobi` has been 
 ## Installation
 
 Install Gurobi according to the instructions on the website,
-which includes obtaining a license key.  The installation should make the
-interactive Gurobi shell ``gurobi.sh`` available in your ``PATH``.
+which includes obtaining a license key.
+
+- On a Linux system, after unpacking the Gurobi archive in the desired location,
+  such as `/opt`, set the environment variable `GUROBI_HOME` to the directory containing the subdirectories `bin`, `lib`, ...:
+
+        $ export GUROBI_HOME=/opt/gurobi900/linux64
+
+  Then adjust your `PATH` (or create symbolic links) so that the interactive Gurobi shell `gurobi.sh` can be found from your `PATH`:
+
+        $ export PATH="$GUROBI_HOME/bin:$PATH"
+
+- On macOS, the Gurobi installer should make the interactive Gurobi shell ``gurobi.sh`` available in `/usr/local/bin` and therefore from your ``PATH``.
+
 Verify this by typing the shell command ``gurobi.sh``::
 
     $ gurobi.sh
@@ -24,18 +35,19 @@ Verify this by typing the shell command ``gurobi.sh``::
     Type "help()" for help
     gurobi>
 
-If this does not work, adjust your ``PATH`` or create symbolic links so
+If this does not work, adjust your ``PATH`` (or create symbolic links) so
 that ``gurobi.sh`` is found.
 
-This package finds the Gurobi installation using `gurobi.sh` in your ``PATH``.
-Alternative methods of configuration are the following:
-
-- set the `GUROBI_HOME` environment variable,
-- or set compiler/linker flags appropriately.
+This package finds the Gurobi installation using the `GUROBI_HOME` environment variable.  (On macOS, it suffices to have `gurobi.sh` in your ``PATH``.)
+An alternative method of build configuration is to set compiler/linker flags appropriately.
 
 Install this package from PyPI using
 
     $ sage -python -m pip install sage-numerical-backends-gurobi
+
+or from a checked out source tree using
+
+    $ sage -python -m pip install .
 
 or from GitHub using
 

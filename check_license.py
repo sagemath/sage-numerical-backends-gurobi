@@ -8,7 +8,8 @@ try:
     b = GurobiBackend()
 except MIPSolverException as e:
     if 'NO_LICENSE' in str(e):
-        print("Success: sage_numerical_backends_gurobi.gurobi_backend.GurobiBackend() gives exception:", e, "(ok)", file=sys.stderr)
+        print("No license: sage_numerical_backends_gurobi.gurobi_backend.GurobiBackend() gives exception:", e, "(ok)", file=sys.stderr)
+        sys.exit(42)
     else:
         raise
 else:
