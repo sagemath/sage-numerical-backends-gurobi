@@ -79,7 +79,7 @@ To use this solver (backend) with [`MixedIntegerLinearProgram`](http://doc.sagem
     sage: M.get_backend()
     <sage_numerical_backends_gurobi.gurobi_backend.GurobiBackend object at 0x7fb72c2c7868>
 
-To make it available as the solver named `'Gurobi`, we need to make the new module
+To make it available as the solver named `'Gurobi'`, we need to make the new module
 known as `sage.numerical.backends.gurobi_backend` (note dots, not underscores), using
 the following commands:
 
@@ -87,8 +87,8 @@ the following commands:
     sage: sys.modules['sage.numerical.backends.gurobi_backend'] = backends.gurobi_backend = gurobi_backend
 
 If these commands are executed in a Sage session before any `MixedIntegerLinearProgram` is created, then
-the new `'Gurobi` solver wins over the `'GLPK'` solver in the selection of the default MIP backend.
-To select the `'Gurobi` solver explicitly as the default MIP backend, additionally use the following command.
+the new `'Gurobi'` solver wins over the `'GLPK'` solver in the selection of the default MIP backend.
+To select the `'Gurobi'` solver explicitly as the default MIP backend, additionally use the following command.
 
     sage: default_mip_solver('Gurobi')
 
