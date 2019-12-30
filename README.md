@@ -9,6 +9,8 @@ Because of the proprietary nature of the Gurobi software, `GurobiBackend` is not
 
 The present standalone Python package `sage-numerical-backends-gurobi` has been created from the SageMath sources, version 9.0.beta10.  It can be installed on top of various Sage installations using pip, including older versions of Sage such as 8.1 (as shipped by Ubuntu bionic 18.04LTS).
 
+Sage ticket https://trac.sagemath.org/ticket/28175 uses this package to remove the in-tree version of `GurobiBackend`.
+
 ## Installation
 
 Install Gurobi according to the instructions on the website,
@@ -77,13 +79,26 @@ To use this solver (backend) with [`MixedIntegerLinearProgram`](http://doc.sagem
     sage: M.get_backend()
     <sage_numerical_backends_gurobi.gurobi_backend.GurobiBackend object at 0x7fb72c2c7868>
 
-Setting it as the default backend for `MixedIntegerLinearProgram`, as of SageMath 9.0.beta10, requires some trickery:
+To make it available as the solver named `'Gurobi`, we need to make the new module
+known as `sage.numerical.backends.gurobi_backend` (note dots, not underscores), using
+the following commands:
 
     sage: import sage_numerical_backends_gurobi.gurobi_backend as gurobi_backend, sage.numerical.backends as backends, sys
     sage: sys.modules['sage.numerical.backends.gurobi_backend'] = backends.gurobi_backend = gurobi_backend
+
+If these commands are executed in a Sage session before any `MixedIntegerLinearProgram` is created, then
+the new `'Gurobi` solver wins over the `'GLPK'` solver in the selection of the default MIP backend.
+To select the `'Gurobi` solver explicitly as the default MIP backend, additionally use the following command.
+
     sage: default_mip_solver('Gurobi')
 
-To patch this in permanently (at your own risk):
+To make these setting permanent, add the above 2 + 1 commands to your `~/.sage/init.sage` file.
+Note that this setting will not affect doctesting (`sage -t`) because this file is ignored in doctesting mode.
+
+## Overriding the default solver for doctesting
+
+Another method is to patch the module in permanently to the sage installation (at your own risk).
+This method will affect doctesting.
 
     $ sage -c 'import os; import sage.numerical.backends as dm; import sage_numerical_backends_gurobi.gurobi_backend as sm; s = sm.__file__; f = os.path.basename(s); d = os.path.join(dm.__path__[0], f); (os.path.exists(d) or os.path.lexists(d)) and os.remove(d); os.symlink(s, d);'
 
