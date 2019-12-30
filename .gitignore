@@ -133,5 +133,8 @@ dmypy.json
 # Editor files
 *~
 
+# Test suite output
+timings*.json
+
 # Secrets
 /.private
