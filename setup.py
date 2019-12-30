@@ -25,10 +25,19 @@ class SageTest(TestCommand):
         elif errno != 0:
             print("check_license.py returned error {}".format(errno))
             sys.exit(1)
+        self._actually_run_tests()
+
+    def _actually_run_tests(self):
         # Passing optional=sage avoids using sage.misc.package.list_packages,
         # which gives an error on Debian unstable as of 2019-12-27:
         # FileNotFoundError: [Errno 2] No such file or directory: '/usr/share/sagemath/build/pkgs'
-        errno = os.system("PYTHONPATH=`pwd` sage -t --force-lib --optional=sage sage_numerical_backends_gurobi")
+        errno = os.system("PYTHONPATH=`pwd` sage -t --force-lib --optional=sage,gurobi sage_numerical_backends_gurobi")
+        if errno != 0:
+            sys.exit(1)
+
+class SageTestSage(SageTest):
+    def _actually_run_tests(self):
+        errno = os.system("PYTHONPATH=`pwd` sage -c 'load(\"check_sage_testsuite.py\")'")
         if errno != 0:
             sys.exit(1)
 
@@ -139,7 +148,7 @@ setup(
                  ],
     ext_modules = cythonize(ext_modules, include_path=sys.path,
                             compile_time_env=compile_time_env),
-    cmdclass = {'test': SageTest}, # adding a special setup command for tests
+    cmdclass = {'test': SageTest, 'check_sage_testsuite': SageTestSage}, # adding a special setup command for tests
     keywords=['milp', 'linear-programming', 'optimization'],
     packages=['sage_numerical_backends_gurobi'],
     package_dir={'sage_numerical_backends_gurobi': 'sage_numerical_backends_gurobi'},
