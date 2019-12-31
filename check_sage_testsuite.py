@@ -1,3 +1,5 @@
+from __future__ import print_function
+
 """
 Check portions of the sage test suite, with default mip solver set to ours.
 
@@ -28,7 +30,7 @@ files = ["coding",
          "matroids/",
          "sat/"]
 
-files += glob.glob("numerical/*.py*")
+files += glob.glob("numerical/*.py") + glob.glob("numerical/*.pyx")
 
 # First verify that we installed the default backend
 DC = DocTestController(options, [abs_file])
