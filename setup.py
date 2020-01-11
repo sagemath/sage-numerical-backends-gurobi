@@ -55,8 +55,13 @@ if not gurobi_home:
     # gurobi.sh might be in PATH.  As of Gurobi 9.0 (on macOS), it is
     # a shell script that sets (but does not export) GUROBI_HOME
     # and then invokes a Python interpreter.
+    # Gurobi 8.0.1 and 8.1.1 (on macOS) do not set GUROBI_HOME
+    # but set PYTHONPATH.
     try:
-        gurobi_home = subprocess.check_output(". gurobi.sh -c '' && echo $GUROBI_HOME", shell=True).decode("UTF-8").strip()
+        gurobi_home = subprocess.check_output(
+            '. gurobi.sh -c "" '
+            '&& if [ -n "$GUROBI_HOME" ]; then echo $GUROBI_HOME; else dirname $PYTHONPATH; fi',
+            shell=True).decode("UTF-8").strip()
         print("Using GUROBI_HOME obtained from gurobi.sh: {}".format(gurobi_home),
               file=sys.stderr)
     except subprocess.CalledProcessError:
