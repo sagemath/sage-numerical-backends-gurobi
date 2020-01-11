@@ -109,6 +109,17 @@ To run the Sage testsuite with the default MIP solver set to the backend provide
 
 If no Gurobi license is available, the testing is skipped without error.
 
+## Running tests with tox
+
+The doctests can also be invoked using `tox`:
+
+    $ tox -e local
+    $ tox -e local-sage_testsuite
+
+Testing multiple installed Gurobi versions in parallel (see `tox.ini`):
+
+    $ tox -p auto
+
 ## Overriding the default solver by patching the Sage installation
 
 Another method is to patch the module in permanently to the sage installation (at your own risk).
