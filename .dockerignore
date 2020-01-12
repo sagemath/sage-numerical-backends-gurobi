@@ -8,3 +8,6 @@ build
 */*.so
 */__pycache__
 *.egg-info
+*~
+temp/
+timings*.json
