@@ -114,7 +114,7 @@ If no Gurobi license is available, the testing is skipped without error.
 The doctests can also be invoked using `tox`:
 
     $ tox -e local
-    $ tox -e local-sage_testsuite
+    $ tox -e local check_sage_testsuite.py
 
 Testing multiple installed Gurobi versions in parallel (see `tox.ini`):
 
