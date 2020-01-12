@@ -7,3 +7,10 @@ exclude *.c
 exclude *.cpp
 exclude */*.c
 exclude */*.cpp
+include .dockerignore
+include Dockerfile
+include environment.yml
+include patch_and_check.sh
+include tox.ini
+include requirements.txt
+include docker-setup.sh
