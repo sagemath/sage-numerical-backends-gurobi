@@ -48,6 +48,7 @@ def readfile(filename):
 
 gurobi_include_directories = []
 gurobi_lib_directories = []
+gurobi_lib_files = []
 gurobi_libs = []
 gurobi_home = os.getenv("GUROBI_HOME")
 
@@ -71,6 +72,8 @@ exts = ['so']
 if sys.platform == 'darwin':
     exts.insert(0, 'dylib')
 
+use_rpath = False
+
 if gurobi_home:
     gurobi_include_directories.append(gurobi_home + "/include")
     libdir = gurobi_home + "/lib"
@@ -79,6 +82,7 @@ if gurobi_home:
     for file in os.listdir(libdir):
         if any(fnmatch(file, 'libgurobi*.' + ext) for ext in exts):
             gurobi_libs = [os.path.splitext(file)[0][3:]]
+            gurobi_lib_files = [os.path.join(libdir, file)]
             break
 
 if not gurobi_libs:
@@ -89,14 +93,27 @@ else:
     print("Using gurobi_include_directories={}, libraries={}, library_dirs={}".format(
         gurobi_include_directories, gurobi_libs, gurobi_lib_directories), file=sys.stderr)
 
+if use_rpath:
+    lib_args = dict(libraries=gurobi_libs,
+                    library_dirs=gurobi_lib_directories,
+                    # could also use runtime_library_dirs=...
+                    extra_link_args=['-Wl,-rpath,' + dir for dir in gurobi_lib_directories])
+else:
+    if sys.platform == 'darwin':
+        # -dylib_file install_name:file_name
+        lib_args = dict(libraries=gurobi_libs,
+                        library_dirs=gurobi_lib_directories,
+                        extra_link_args=['-Wl,-dylib_file,{}:{}'.format(dir, dir)
+                                         for dir in gurobi_lib_files])
+    else:
+        lib_args = dict(extra_link_args=gurobi_lib_files)
+
  # Cython modules
 ext_modules = [Extension('sage_numerical_backends_gurobi.gurobi_backend',
                          sources = [os.path.join('sage_numerical_backends_gurobi',
                                      'gurobi_backend.pyx')],
                          include_dirs=sage_include_directories() + gurobi_include_directories,
-                         libraries=gurobi_libs,
-                         library_dirs=gurobi_lib_directories,
-                         extra_link_args=['-Wl,-rpath,' + dir for dir in gurobi_lib_directories])
+                         **lib_args)
     ]
 
 
