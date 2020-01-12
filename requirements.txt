@@ -1,0 +1,5 @@
+setuptools
+wheel
+Cython
+cysignals
+#sage >= 8.0

@@ -14,6 +14,15 @@ sys.modules['sage.numerical.backends.gurobi_backend'] = backends.gurobi_backend 
 from sage.numerical.backends.generic_backend import default_mip_solver
 default_mip_solver('Gurobi')
 
+try:
+    from sage_numerical_backends_gurobi.gurobi_backend import GurobiBackend
+    b = GurobiBackend()
+except MIPSolverException as e:
+    if 'NO_LICENSE' in str(e):
+        print("No license: sage_numerical_backends_gurobi.gurobi_backend.GurobiBackend() gives exception:", e, "(ok)", file=sys.stderr)
+        print("The module seems to work but the license is missing. Skipping the test suite.", file=sys.stderr)
+        sys.exit(0)
+
 from sage.doctest.control import DocTestController, DocTestDefaults
 options = DocTestDefaults(nthreads=0, long=False, optional="sage,gurobi", force_lib=True, abspath=True)
 
