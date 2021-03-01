@@ -1361,6 +1361,7 @@ cdef dict parameters_type = {
     "ImproveStartNodes" : "double",
     "ImproveStartTime"  : "double",
     "InfUnbdInfo"       : "int",
+    "IntegralityFocus"  : "int",
     "InputFile"         : "string",
     "IntFeasTol"        : "double",
     "IterationLimit"    : "double",
