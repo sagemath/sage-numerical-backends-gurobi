@@ -7,11 +7,9 @@ from which it is built as an "optional extension" if the proprietary Gurobi libr
 
 Because of the proprietary nature of the Gurobi software, `GurobiBackend` is not available in any binary distributions of SageMath.
 
-The present standalone Python package `sage-numerical-backends-gurobi` has been created from the SageMath sources, version 9.0.beta10.  It can be installed on top of various Sage installations using pip, including older versions of Sage such as 8.1 (as shipped by Ubuntu bionic 18.04LTS).
+The present standalone Python package `sage-numerical-backends-gurobi` has been created from the SageMath sources, version 9.0.beta10; the in-tree version of `GurobiBackend` has been removed in [Sage ticket #28175](https://trac.sagemath.org/ticket/28175).  The present package can be installed on top of various Sage installations using `pip`, including older versions of Sage such as 8.1 (as shipped by Ubuntu bionic 18.04LTS).
 
-Sage ticket https://trac.sagemath.org/ticket/28175 uses this package to remove the in-tree version of `GurobiBackend`.
-
-## Installation
+## Installation of Gurobi
 
 Install Gurobi according to the instructions on the website,
 which includes obtaining a license key.
@@ -40,10 +38,16 @@ Verify this by typing the shell command ``gurobi.sh``::
 If this does not work, adjust your ``PATH`` (or create symbolic links) so
 that ``gurobi.sh`` is found.
 
+## Installation of this package
+
 This package finds the Gurobi installation using the `GUROBI_HOME` environment variable.  (On macOS, it suffices to have `gurobi.sh` in your ``PATH``.)
 An alternative method of build configuration is to set compiler/linker flags appropriately.
 
-Install this package from PyPI using
+In [SageMath 9.1 and newer](https://wiki.sagemath.org/ReleaseTours/sage-9.1#Easier_installation_of_optional_linear_and_mixed_integer_linear_optimization_backends), this package is available as an optional SPKG and can be installed using
+
+    $ sage -i sage_numerical_backends_gurobi
+
+Alternatively, you can install this package from PyPI using
 
     $ sage -python -m pip install sage-numerical-backends-gurobi
 
