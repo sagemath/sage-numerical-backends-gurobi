@@ -142,12 +142,12 @@ setup(
     description="Gurobi backend for Sage MixedIntegerLinearProgram",
     long_description = readfile("README.md"), # get the long description from the README
     long_description_content_type='text/markdown', # https://packaging.python.org/guides/making-a-pypi-friendly-readme/
-    url="https://github.com/mkoeppe/sage-numerical-backends-gurobi",
+    url="https://github.com/sagemath/sage-numerical-backends-gurobi",
     # Author list obtained by running the following command on sage 9.0.beta9:
     # for f in gurobi_backend.p*; do git blame -w -M -C -C --line-porcelain "$f" | grep -I '^author '; done | sort -f | uniq -ic | sort -n
     # cut off at < 10 lines of attribution.
     author='Nathann Cohen, Martin Albrecht, Matthias Koeppe, John Perry, David Coudert, Jori Mäntysalo, Jeroen Demeyer, Erik M. Bray, Emil R. Vaughan, and others',
-    author_email='mkoeppe@math.ucdavis.edu',
+    author_email='sage-support@googlegroups.com',
     license='GPLv2+', # This should be consistent with the LICENCE file
     classifiers=['Development Status :: 5 - Production/Stable',
                  "Intended Audience :: Science/Research",
