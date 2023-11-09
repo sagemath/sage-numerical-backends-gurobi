@@ -211,7 +211,7 @@ cdef class GurobiBackend(GenericBackend):
         return self.ncols()-1
 
     IF HAVE_ADD_COL_UNTYPED_ARGS:
-        cpdef add_col(self, indices, coeffs):
+        cpdef add_col(self, indices, coeffs) noexcept:
             """
             Add a column.
 
@@ -247,7 +247,7 @@ cdef class GurobiBackend(GenericBackend):
             """
             self.add_variable(coefficients = zip(indices, coeffs))
     ELSE:
-        cpdef add_col(self, list indices, list coeffs):
+        cpdef add_col(self, list indices, list coeffs) noexcept:
             """
             Add a column.
 
@@ -271,7 +271,7 @@ cdef class GurobiBackend(GenericBackend):
             """
             self.add_variable(coefficients = zip(indices, coeffs))
 
-    cpdef set_variable_type(self, int variable, int vtype):
+    cpdef set_variable_type(self, int variable, int vtype) noexcept:
         """
         Set the type of a variable
 
@@ -309,7 +309,7 @@ cdef class GurobiBackend(GenericBackend):
 
         check(self.env,GRBupdatemodel(self.model))
 
-    cpdef set_sense(self, int sense):
+    cpdef set_sense(self, int sense) noexcept:
         """
         Set the direction (maximization/minimization).
 
@@ -340,7 +340,7 @@ cdef class GurobiBackend(GenericBackend):
         check(self.env, error)
         check(self.env,GRBupdatemodel(self.model))
 
-    cpdef objective_coefficient(self, int variable, coeff=None):
+    cpdef objective_coefficient(self, int variable, coeff=None) noexcept:
         """
         Set or get the coefficient of a variable in the objective function
 
@@ -376,7 +376,7 @@ cdef class GurobiBackend(GenericBackend):
             return value[0]
 
     IF HAVE_SAGE_CPYTHON_STRING:
-        cpdef problem_name(self, name=None):
+        cpdef problem_name(self, name=None) noexcept:
             """
             Return or define the problem's name
 
@@ -416,7 +416,7 @@ cdef class GurobiBackend(GenericBackend):
 
                 return value
     ELSE:
-        cpdef problem_name(self, char *name=NULL):
+        cpdef problem_name(self, char *name=NULL) noexcept:
             """
             Return or define the problem's name
 
@@ -443,7 +443,7 @@ cdef class GurobiBackend(GenericBackend):
 
                 return value
 
-    cpdef set_objective(self, list coeff, d = 0.0):
+    cpdef set_objective(self, list coeff, d = 0.0) noexcept:
         """
         Set the objective function.
 
@@ -489,7 +489,7 @@ cdef class GurobiBackend(GenericBackend):
 
         self.obj_constant_term = d
 
-    cpdef set_verbosity(self, int level):
+    cpdef set_verbosity(self, int level) noexcept:
         """
         Set the verbosity level
 
@@ -512,7 +512,7 @@ cdef class GurobiBackend(GenericBackend):
 
         check(self.env, error)
 
-    cpdef remove_constraint(self, int i):
+    cpdef remove_constraint(self, int i) noexcept:
         r"""
         Remove a constraint from self.
 
@@ -547,7 +547,7 @@ cdef class GurobiBackend(GenericBackend):
         error = GRBupdatemodel(self.model)
         check(self.env,error)
 
-    cpdef add_linear_constraint(self, coefficients, lower_bound, upper_bound, name=None):
+    cpdef add_linear_constraint(self, coefficients, lower_bound, upper_bound, name=None) noexcept:
         """
         Add a linear constraint.
 
@@ -624,7 +624,7 @@ cdef class GurobiBackend(GenericBackend):
         sig_free(row_i)
         sig_free(row_values)
 
-    cpdef row(self, int index):
+    cpdef row(self, int index) noexcept:
         r"""
         Return a row
 
@@ -676,7 +676,7 @@ cdef class GurobiBackend(GenericBackend):
         return indices, values
 
 
-    cpdef row_bounds(self, int index):
+    cpdef row_bounds(self, int index) noexcept:
         """
         Return the bounds of a specific constraint.
 
@@ -717,7 +717,7 @@ cdef class GurobiBackend(GenericBackend):
         else:
             return (d[0],d[0])
 
-    cpdef col_bounds(self, int index):
+    cpdef col_bounds(self, int index) noexcept:
         """
         Return the bounds of a specific variable.
 
@@ -792,7 +792,7 @@ cdef class GurobiBackend(GenericBackend):
             raise MIPSolverException("Gurobi: "+mip_status.get(status[0], "unknown error during call to GRBoptimize : "+str(status[0])))
 
 
-    cpdef get_objective_value(self):
+    cpdef get_objective_value(self) noexcept:
         """
         Returns the value of the objective function.
 
@@ -823,7 +823,7 @@ cdef class GurobiBackend(GenericBackend):
 
         return p_value[0] + <double>self.obj_constant_term
 
-    cpdef get_variable_value(self, int variable):
+    cpdef get_variable_value(self, int variable) noexcept:
         """
         Returns the value of a variable given by the solver.
 
@@ -856,7 +856,7 @@ cdef class GurobiBackend(GenericBackend):
         else:
             return round(value[0])
 
-    cpdef int ncols(self):
+    cpdef int ncols(self) noexcept:
         """
         Return the number of columns/variables.
 
@@ -875,7 +875,7 @@ cdef class GurobiBackend(GenericBackend):
         check(self.env,GRBgetintattr(self.model, "NumVars", i))
         return i[0]
 
-    cpdef int nrows(self):
+    cpdef int nrows(self) noexcept:
         """
         Return the number of rows/constraints.
 
@@ -894,7 +894,7 @@ cdef class GurobiBackend(GenericBackend):
         check(self.env,GRBgetintattr(self.model, "NumConstrs", i))
         return i[0]
 
-    cpdef col_name(self, int index):
+    cpdef col_name(self, int index) noexcept:
         """
         Return the ``index`` th col name
 
@@ -919,7 +919,7 @@ cdef class GurobiBackend(GenericBackend):
             value = char_to_str(name[0])
         return value
 
-    cpdef row_name(self, int index):
+    cpdef row_name(self, int index) noexcept:
         """
         Return the ``index`` th row name
 
@@ -943,7 +943,7 @@ cdef class GurobiBackend(GenericBackend):
             value = char_to_str(name[0])
         return value
 
-    cpdef bint is_variable_binary(self, int index):
+    cpdef bint is_variable_binary(self, int index) noexcept:
         """
         Test whether the given variable is of binary type.
 
@@ -968,7 +968,7 @@ cdef class GurobiBackend(GenericBackend):
         return vtype[0] == 'B'
 
 
-    cpdef bint is_variable_integer(self, int index):
+    cpdef bint is_variable_integer(self, int index) noexcept:
         """
         Test whether the given variable is of integer type.
 
@@ -992,7 +992,7 @@ cdef class GurobiBackend(GenericBackend):
         check(self.env, GRBgetcharattrelement(self.model, "VType", index, <char *> vtype))
         return vtype[0] == 'I'
 
-    cpdef bint is_variable_continuous(self, int index):
+    cpdef bint is_variable_continuous(self, int index) noexcept:
         """
         Test whether the given variable is of continuous/real type.
 
@@ -1019,7 +1019,7 @@ cdef class GurobiBackend(GenericBackend):
         check(self.env, GRBgetcharattrelement(self.model, "VType", index, <char *> vtype))
         return vtype[0] == 'C'
 
-    cpdef bint is_maximization(self):
+    cpdef bint is_maximization(self) noexcept:
         """
         Test whether the problem is a maximization
 
@@ -1037,7 +1037,7 @@ cdef class GurobiBackend(GenericBackend):
         check(self.env,GRBgetintattr(self.model, "ModelSense", <int *> sense))
         return sense[0] == -1
 
-    cpdef variable_upper_bound(self, int index, value = False):
+    cpdef variable_upper_bound(self, int index, value = False) noexcept:
         """
         Return or define the upper bound on a variable
 
@@ -1075,7 +1075,7 @@ cdef class GurobiBackend(GenericBackend):
             check(self.env, error)
             return None if b[0] >= GRB_INFINITY else b[0]
 
-    cpdef variable_lower_bound(self, int index, value = False):
+    cpdef variable_lower_bound(self, int index, value = False) noexcept:
         """
         Return or define the lower bound on a variable
 
@@ -1116,7 +1116,7 @@ cdef class GurobiBackend(GenericBackend):
             return None if b[0] <= -GRB_INFINITY else b[0]
 
     IF HAVE_SAGE_CPYTHON_STRING:
-        cpdef write_lp(self, filename):
+        cpdef write_lp(self, filename) noexcept:
             """
             Write the problem to a .lp file
 
@@ -1137,7 +1137,7 @@ cdef class GurobiBackend(GenericBackend):
             filename = str_to_bytes(filename, FS_ENCODING, 'surrogateescape')
             check(self.env, GRBwrite(self.model, filename))
 
-        cpdef write_mps(self, filename, int modern):
+        cpdef write_mps(self, filename, int modern) noexcept:
             """
             Write the problem to a .mps file
 
@@ -1158,7 +1158,7 @@ cdef class GurobiBackend(GenericBackend):
             filename = str_to_bytes(filename, FS_ENCODING, 'surrogateescape')
             check(self.env, GRBwrite(self.model, filename))
     ELSE:
-        cpdef write_lp(self, char *filename):
+        cpdef write_lp(self, char *filename) noexcept:
             """
             Write the problem to a .lp file
 
@@ -1169,7 +1169,7 @@ cdef class GurobiBackend(GenericBackend):
             """
             check(self.env, GRBwrite(self.model, filename))
 
-        cpdef write_mps(self, char *filename, int modern):
+        cpdef write_mps(self, char *filename, int modern) noexcept:
             """
             Write the problem to a .mps file
 
@@ -1181,7 +1181,7 @@ cdef class GurobiBackend(GenericBackend):
             check(self.env, GRBwrite(self.model, filename))
 
 
-    cpdef solver_parameter(self, name, value = None):
+    cpdef solver_parameter(self, name, value = None) noexcept:
         """
         Returns or defines a solver parameter.
 
@@ -1266,7 +1266,7 @@ cdef class GurobiBackend(GenericBackend):
         else:
             raise RuntimeError("This should not happen.")
 
-    cpdef __copy__(self):
+    cpdef __copy__(self) noexcept:
         """
         Returns a copy of self.
 
