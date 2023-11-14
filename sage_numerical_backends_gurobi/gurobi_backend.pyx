@@ -1127,12 +1127,14 @@ cdef class GurobiBackend(GenericBackend):
             EXAMPLES::
 
                 sage: from sage_numerical_backends_gurobi.gurobi_backend import GurobiBackend
+                sage: import tempfile
                 sage: p = GurobiBackend()
                 sage: p.add_variables(2)
                 1
                 sage: p.add_linear_constraint([[0, 1], [1, 2]], None, 3)
                 sage: p.set_objective([2, 5])
-                sage: p.write_lp(os.path.join(SAGE_TMP, "lp_problem.lp"))
+                sage: with tempfile.TemporaryDirectory() as f:
+                ....:     p.write_lp(os.path.join(f, "lp_problem.lp"))
             """
             filename = str_to_bytes(filename, FS_ENCODING, 'surrogateescape')
             check(self.env, GRBwrite(self.model, filename))
@@ -1148,12 +1150,14 @@ cdef class GurobiBackend(GenericBackend):
             EXAMPLES::
 
                 sage: from sage_numerical_backends_gurobi.gurobi_backend import GurobiBackend
+                sage: import tempfile
                 sage: p = GurobiBackend()
                 sage: p.add_variables(2)
                 1
                 sage: p.add_linear_constraint([[0, 1], [1, 2]], None, 3)
                 sage: p.set_objective([2, 5])
-                sage: p.write_lp(os.path.join(SAGE_TMP, "lp_problem.lp"))
+                sage: with tempfile.TemporaryDirectory() as f:
+                ....:     p.write_lp(os.path.join(f, "lp_problem.lp"))
             """
             filename = str_to_bytes(filename, FS_ENCODING, 'surrogateescape')
             check(self.env, GRBwrite(self.model, filename))
