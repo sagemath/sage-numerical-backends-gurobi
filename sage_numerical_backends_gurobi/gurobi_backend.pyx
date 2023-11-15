@@ -502,7 +502,7 @@ cdef class GurobiBackend(GenericBackend):
             sage: from sage_numerical_backends_gurobi.gurobi_backend import GurobiBackend
             sage: p = GurobiBackend()
             sage: p.set_verbosity(2)
-
+            Set parameter OutputFlag to value 1
         """
         cdef int error
         if level:
