@@ -107,32 +107,14 @@ ext_modules = [Extension('sage_numerical_backends_gurobi.gurobi_backend',
                          **lib_args)
     ]
 
-
-## SageMath 8.1 (included in Ubuntu bionic 18.04 LTS) does not have sage.cpython.string;
-## it was introduced in 8.2.
-compile_time_env = {'HAVE_SAGE_CPYTHON_STRING': False,
-                    'HAVE_ADD_COL_UNTYPED_ARGS': False}
-
-print("Checking whether HAVE_SAGE_CPYTHON_STRING...", file=sys.stderr)
-try:
-    import sage.cpython.string
-    compile_time_env['HAVE_SAGE_CPYTHON_STRING'] = True
-except ImportError:
-    pass
-
-## SageMath 8.7 changed the signature of add_col.
-print("Checking whether HAVE_ADD_COL_UNTYPED_ARGS...", file=sys.stderr)
-try:
-    cythonize(Extension('check_add_col_untyped_args',
-                        sources=['check_add_col_untyped_args.pyx'],
-                        include_dirs=sage_include_directories()),
-              quiet=True,
-              include_path=sys.path)
-    compile_time_env['HAVE_ADD_COL_UNTYPED_ARGS'] = True
-except CompileError:
-    pass
-
+compile_time_env = {'HAVE_SAGE_CPYTHON_STRING': True,
+                    'HAVE_ADD_COL_UNTYPED_ARGS': True}
 print("Using compile_time_env: {}".format(compile_time_env), file=sys.stderr)
+
+if any(x in sys.argv
+       for x in ['build', 'build_ext', 'bdist_wheel', 'install']):
+    ext_modules = cythonize(ext_modules, include_path=sys.path,
+                            compile_time_env=compile_time_env)
 
 setup(
     name="sage_numerical_backends_gurobi",
@@ -152,8 +134,6 @@ setup(
                  'License :: OSI Approved :: GNU General Public License v2 or later (GPLv2+)',
                  "Programming Language :: Python",
                  'Programming Language :: Python :: 3',
-                 'Programming Language :: Python :: 3.4',
-                 'Programming Language :: Python :: 3.5',
                  'Programming Language :: Python :: 3.6',
                  'Programming Language :: Python :: 3.7',
                  'Programming Language :: Python :: 3.8',
@@ -162,8 +142,7 @@ setup(
                  'Programming Language :: Python :: 3.11',
                  'Programming Language :: Python :: 3.12',
                  ],
-    ext_modules = cythonize(ext_modules, include_path=sys.path,
-                            compile_time_env=compile_time_env),
+    ext_modules=ext_modules,
     cmdclass = {'test': SageTest, 'check_sage_testsuite': SageTestSage}, # adding a special setup command for tests
     keywords=['milp', 'linear-programming', 'optimization'],
     packages=['sage_numerical_backends_gurobi'],
