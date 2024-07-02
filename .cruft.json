@@ -1,0 +1,12 @@
+{
+  "template": "https://github.com/mkoeppe/sage",
+  "commit": "13eccae44af570b5c8389c9e6827e32a0af4bfa2",
+  "checkout": "sagemath-environment-cookiecutter",
+  "context": {
+    "cookiecutter": {
+      "project_name": "sage-numerical-backends-gurobi",
+      "_template": "https://github.com/mkoeppe/sage"
+    }
+  },
+  "directory": "pkgs/sage-project-cookiecutter/sage_project_cookiecutter/sagemath-upstream-package-template"
+}
